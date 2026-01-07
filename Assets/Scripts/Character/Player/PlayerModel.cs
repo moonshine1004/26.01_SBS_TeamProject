@@ -10,7 +10,7 @@ public enum PlayerType
 public class PlayerModel
 {
     private string _name;
-    private bool _isAlive;
+    private bool _isAlive = true;
     private readonly int _maxHP;
     private int _hp;
 

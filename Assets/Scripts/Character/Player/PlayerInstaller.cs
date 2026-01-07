@@ -16,6 +16,6 @@ public class PlayerInstaller : MonoBehaviour
 
     private PlayerModel InitPlayerModel(PlayerStat playerStat)
     {
-        return new PlayerModel(playerStat._maxHP);
+        return new PlayerModel(playerStat.maxHP);
     }
 }
