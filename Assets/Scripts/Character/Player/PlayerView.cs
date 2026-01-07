@@ -17,16 +17,16 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _playerPresenter = playerPresenter;
     }
 
-    private void OllisionEnter2D(Collision2D collision)
-    {
-        switch (collision.gameObject.GetComponent<Tile>().tileType)
-        {
-            case TileType.Damage1:
-                _playerPresenter.Onhit(1);
-                break;
-            case TileType.Damage2:
+    // private void OllisionEnter2D(Collision2D collision)
+    // {
+    //     switch (collision.gameObject.GetComponent<Tile>().tileType)
+    //     {
+    //         case TileType.Damage1:
+    //             _playerPresenter.Onhit(1);
+    //             break;
+    //         case TileType.Damage2:
                 
-                break;
-        }
-    }
+    //             break;
+    //     }
+    // }
 }
