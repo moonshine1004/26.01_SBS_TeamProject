@@ -12,7 +12,7 @@ public class PlayerPresenter : IPlayerPresenter
 {
     private PlayerModel _playerModel;
     private IPlayerView _playerView;
-    
+
     private static PlayerPresenter _instance;
     public static PlayerPresenter Instance
     {
@@ -22,19 +22,21 @@ public class PlayerPresenter : IPlayerPresenter
         }
         set
         {
-            if(_instance == null)
+            if (_instance == null)
                 _instance = value;
             else
                 Debug.LogWarning("이미 객체 존재");
         }
     }
-    
+
     public PlayerPresenter(PlayerModel playerModel, IPlayerView playerView)
     {
         _playerModel = playerModel;
         _playerView = playerView;
     }
 
+    private TilePresenter _tilePresenter;
+    
     public void Onhit(int damage)
     {
         _playerModel.HP -= damage;
@@ -46,5 +48,10 @@ public class PlayerPresenter : IPlayerPresenter
     public int GetMaxHP()
     {
         return _playerModel.MaxHP;
+    }
+    public void CheckTile()
+    {
+        var tile = _tilePresenter.GetTileType();
+        
     }
 }

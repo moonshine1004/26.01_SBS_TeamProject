@@ -1,30 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileType
-{
-    Walkable,
-    Unwalkable,
-    Damage1,
-    Damage2
-}
-
-
-public class Tile
-{
-    public TileType type;
-}
-
 public class Tiles
 {
-    public static Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
+    public static Dictionary<Vector2, TileModel> tiles = new Dictionary<Vector2, TileModel>();
 
-    public Dictionary<Vector2, Tile> CreatTiles()
+    public Dictionary<Vector2, TileModel> CreatTiles()
     {
         int i = 5;
         for(int j =0; j>-50; j--)
         {
-            Tile tile = new Tile();
+            TileModel tile = new TileModel();
             tiles.Add(new Vector2(i, j), tile);
             i += Random.Range(0, 2) == 0 ? -1 : 1; // 계단이 이어지도록 x좌표에 -1 또는 +1을 더함
         }

@@ -949,7 +949,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1987691811}
   - component: {fileID: 1987691810}
-  - component: {fileID: 1987691809}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -957,7 +956,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1987691809
+--- !u!114 &1987691810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -966,27 +965,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1987691808}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e94ce5af9e4044e509617f8ccf026915, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LevelGrid
---- !u!114 &1987691810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987691808}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39a8e66d0c2514999ad890206f903cb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridGizmoDrawer
-  grid: {fileID: 1987691809}
-  min: {x: 0, y: -73}
+  min: {x: 0, y: -80}
   max: {x: 10, y: 0}
   startPosition: {x: -2.573, y: 4.899, z: 0}
-  cellWidth: 0.5
-  cellHeight: 0.2
+  cellWidth: 1
+  cellHeight: 1
 --- !u!4 &1987691811
 Transform:
   m_ObjectHideFlags: 0
