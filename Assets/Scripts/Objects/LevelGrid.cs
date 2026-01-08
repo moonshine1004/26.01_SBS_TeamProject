@@ -7,8 +7,12 @@ public sealed class LevelGrid : MonoBehaviour
     // 타일이 있는 좌표만 저장
     public HashSet<Vector2Int> tiles = new();
 
+    private Tiles _tiles = new Tiles();
+
     private void OnEnable()
     {
+        _tiles.CreatTiles();
+        
         // 프로토타입용: 코드로 타일 배치
         tiles.Clear();
 
@@ -24,4 +28,5 @@ public sealed class LevelGrid : MonoBehaviour
     {
         return tiles.Contains(p);
     }
+    
 }
