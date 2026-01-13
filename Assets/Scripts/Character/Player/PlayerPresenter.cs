@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IPlayerPresenter
 {
     void Onhit(int damage);
+    void OnMove(bool isLeft);
     int UpdateHP();
     int GetMaxHP();
 }
@@ -13,27 +14,18 @@ public class PlayerPresenter : IPlayerPresenter
     private PlayerModel _playerModel;
     private IPlayerView _playerView;
 
-    private static PlayerPresenter _instance;
-    public static PlayerPresenter Instance
-    {
-        get
-        {
-            return _instance;
-        }
-        set
-        {
-            if (_instance == null)
-                _instance = value;
-            else
-                Debug.LogWarning("이미 객체 존재");
-        }
-    }
-
     public PlayerPresenter(PlayerModel playerModel, IPlayerView playerView)
     {
         _playerModel = playerModel;
         _playerView = playerView;
     }
+
+    #region References
+    
+    #endregion
+    #region Fields
+    private Vector2 _position = new Vector2(5, 0);
+    #endregion
 
     private TilePresenter _tilePresenter;
     
@@ -49,9 +41,22 @@ public class PlayerPresenter : IPlayerPresenter
     {
         return _playerModel.MaxHP;
     }
-    public void CheckTile()
+    public void CheckTile(Vector2 position)
     {
-        var tile = _tilePresenter.GetTileType();
-        
+        if (!TileDrawer.Instance.CheckTile(position))
+        {
+            Onhit(1);
+            _playerView.forDebug("체력 -1");
+        }
+    }
+
+    public void OnMove(bool isLeft)
+    {
+        if(isLeft)
+            _position += new Vector2(-1, -1);
+        else
+            _position += new Vector2(1, -1);
+
+        CheckTile(_position);
     }
 }

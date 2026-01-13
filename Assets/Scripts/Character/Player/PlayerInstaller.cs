@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class PlayerInstaller : MonoBehaviour
 {
-    [SerializeField] private PlayerView _playerView;
+    [SerializeField] private IPlayerView _playerView;
     [SerializeField] private PlayerStat _playerStat;
     private PlayerModel _playerModel;
-    private PlayerPresenter _playerPresenter;
+    private IPlayerPresenter _playerPresenter;
 
     public void Awake()
     {
+        _playerView = GetComponent<IPlayerView>();
         var _playerModel = InitPlayerModel(_playerStat);
-        PlayerPresenter.Instance = new PlayerPresenter(_playerModel, _playerView); 
+        _playerPresenter = new PlayerPresenter(_playerModel, _playerView); 
         _playerView.InitPlayerView(_playerPresenter);
     }
 

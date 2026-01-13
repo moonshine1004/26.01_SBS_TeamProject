@@ -24,10 +24,10 @@ public class UIView : MonoBehaviour
     {
     
     }
-    public void Update()
-    {
-        UpdateHealthBar(PlayerPresenter.Instance.UpdateHP(), PlayerPresenter.Instance.GetMaxHP());
-    }
+    // public void Update()
+    // {
+    //     UpdateHealthBar(PlayerPresenter.Instance.UpdateHP(), PlayerPresenter.Instance.GetMaxHP());
+    // }
 
 
 
