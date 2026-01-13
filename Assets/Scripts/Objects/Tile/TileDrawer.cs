@@ -86,4 +86,8 @@ public class TileDrawer : MonoBehaviour
     {
         return tileGrid.Contains(position);
     }
+    private void Clear()
+    {
+        
+    }
 }

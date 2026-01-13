@@ -1,34 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UIView : MonoBehaviour
 {
-    private UIPresenter _uiPresenter;
+    private IUIPresenter _uiPresenter;
     
-    public void InitUIView(UIPresenter uiPresenter)
+    public void InitUIView(IUIPresenter uiPresenter)
     {
         _uiPresenter = uiPresenter;
     }
     
-    private PlayerPresenter _playerPresenter;
-    
+    #region References
+    private IPlayerPresenter _playerPresenter;
+    #endregion
     
     
     
     
     
     [SerializeField] private Slider _healthBar;
-
-
-    public void Start()
-    {
     
+    public void OnFlipButtonInput()
+    {
+        _uiPresenter.OnFlip();   
     }
-    // public void Update()
-    // {
-    //     UpdateHealthBar(PlayerPresenter.Instance.UpdateHP(), PlayerPresenter.Instance.GetMaxHP());
-    // }
-
+    public void OnMoveButtonInput()
+    {
+        _uiPresenter.OnMove();
+    }
 
 
 

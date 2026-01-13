@@ -33,24 +33,24 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
 
 
-    public void Move(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            Vector2 touchPosition = _touchedPosition.ReadValue<Vector2>();
+    // public void Move(InputAction.CallbackContext context)
+    // {
+    //     if (context.performed)
+    //     {
+    //         Vector2 touchPosition = _touchedPosition.ReadValue<Vector2>();
             
-            if(touchPosition.x < Screen.width * 0.5f)
-            {
-                this.gameObject.transform.position += new Vector3(-_xMove, -_yMove, 0);
-                _playerPresenter.OnMove(true);
-            } 
-            else if(touchPosition.x > Screen.width * 0.5f)
-            {
-                this.gameObject.transform.position += new Vector3(_xMove, -_yMove, 0);
-                _playerPresenter.OnMove(false);
-            }
-        }
-    }
+    //         if(touchPosition.x < Screen.width * 0.5f)
+    //         {
+    //             this.gameObject.transform.position += new Vector3(-_xMove, -_yMove, 0);
+    //             _playerPresenter.OnMove(true);
+    //         } 
+    //         else if(touchPosition.x > Screen.width * 0.5f)
+    //         {
+    //             this.gameObject.transform.position += new Vector3(_xMove, -_yMove, 0);
+    //             _playerPresenter.OnMove(false);
+    //         }
+    //     }
+    // }
 
     public void forDebug(string msg)
     {
