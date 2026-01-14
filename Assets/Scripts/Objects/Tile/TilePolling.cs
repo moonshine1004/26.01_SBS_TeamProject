@@ -18,6 +18,8 @@ public class TilePooling : MonoBehaviour
     [SerializeField] private GameObject _tilePrefab;
     private List<GameObject> _pooledTile = new List<GameObject>();
 
+    public int poolAmount = 20;
+
     public void Awake()
     {
         CreatTiles();
@@ -25,7 +27,7 @@ public class TilePooling : MonoBehaviour
 
     public void CreatTiles()
     {
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < poolAmount; i++)
         {
             var tile = InstantiateTiles();
             _pooledTile.Add(tile.obj);
@@ -47,6 +49,10 @@ public class TilePooling : MonoBehaviour
     {
         _pooledTile[num].SetActive(true);
         return _pooledTile[num];
+    }
+    public void ReturnTiles(int num)
+    {
+        _pooledTile[num].SetActive(false);
     }
 
 

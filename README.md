@@ -10,3 +10,81 @@
 - **데이터 관리**: 
 - **아키텍쳐 패턴**: MVP
 - **개발 인원**: 4인
+
+## 구현상세
+#### 1. **플레이어 이동 구현**
+```mermaid
+    classDiagram
+    direction 
+
+    class IEventBus {
+        <<interface>>
+        +Subscribe~T~()
+        +Publish~T~()
+    }
+
+    class UIPresenter {
+        -_eventBus : IEventBus
+        +OnMoveButton()
+        +OnFlipButton()
+    }
+
+    class PlayerPresenter {
+        -_eventBus : IEventBus
+        +OnMoveInput()
+        +OnFlipInput()
+        +Dispose()
+    }
+
+    class MovePressed
+    class FlipPressed
+
+    IEventBus <-- PlayerPresenter
+    IEventBus <-- UIPresenter
+
+    UIPresenter ..> MovePressed : Publish<T>()
+    UIPresenter ..> FlipPressed : Publish<T>()
+
+    PlayerPresenter ..> MovePressed : handle
+    PlayerPresenter ..> FlipPressed : handle
+
+
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User
+    participant UI as UIPresenter
+    participant Bus as IEventBus
+    participant Player as PlayerPresenter
+
+    rect rgb(245,245,245)
+    Note over Player,Bus: 초기화 단계
+    Player->>Bus: Subscribe<MovePressed>(handler)
+    Player->>Bus: Subscribe<FlipPressed>(handler)
+    end
+
+    rect rgb(245,245,245)
+    Note over User,Player: 입력 처리 단계
+    User->>UI: OnMoveButton()
+    UI->>Bus: Publish<MovePressed>(evt)
+    Bus-->>Player: handle(MovePressed)
+    Player->>Player: OnMoveInput()
+
+    User->>UI: OnFlipButton()
+    UI->>Bus: Publish<FlipPressed>(evt)
+    Bus-->>Player: handle(FlipPressed)
+    Player->>Player: OnFlipInput()
+    end
+
+    rect rgb(245,245,245)
+    Note over Player,Bus: 종료/정리 단계
+    User->>Player: Dispose()
+    Player->>Bus: (Unsubscribe handlers)
+    end
+
+```
+
+
+

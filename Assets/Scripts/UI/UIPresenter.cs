@@ -1,38 +1,40 @@
-
-
 using System;
+using Game.Events;
 
 public interface IUIPresenter
 {
     void OnMove();
-    event Action OnMoveInput;
     void OnFlip();
-    event Action OnFlipInput;
 }
 
-public class UIPresenter : IUIPresenter
+public class UIPresenter : IUIPresenter, IEventBusAware
 {
+    #region Constructor
     private UIModel _uiModel;
-    private UIView _uiView;
+    private IUIView _uiView;
     
-    public UIPresenter(UIModel uiModel, UIView uiView)
+    public UIPresenter(UIModel uiModel, IUIView uiView)
     {
         _uiModel = uiModel;
         _uiView = uiView;
-        RuntimeManager.Instance.SetUIPresenter(this);
     }
+    #endregion
+    
+    private IEventBus _eventBus;
 
-    public event Action OnMoveInput;
-    public event Action OnFlipInput;
 
     public void OnFlip()
     {
-        OnFlipInput.Invoke();
+        _eventBus.Publish(new OnFlipPressed());
     }
 
     public void OnMove()
     {
-        OnMoveInput.Invoke();
+        _eventBus.Publish(new OnMovePressed());
     }
-    
+
+    public void SetEventBus(IEventBus bus)
+    {
+        _eventBus = bus;
+    }
 }

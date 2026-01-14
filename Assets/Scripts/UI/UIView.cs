@@ -1,8 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Threading;
+using UnityEngine.InputSystem;
 
-public class UIView : MonoBehaviour
+public interface IUIView
+{
+    void InitUIView(IUIPresenter uiPresenter);
+    void forDebug(string msg);
+
+}
+
+public class UIView : MonoBehaviour, IUIView
 {
     private IUIPresenter _uiPresenter;
     
@@ -16,26 +25,38 @@ public class UIView : MonoBehaviour
     #endregion
     
     
-    
-    
-    
-    [SerializeField] private Slider _healthBar;
-    
     public void OnFlipButtonInput()
     {
-        _uiPresenter.OnFlip();   
+        _uiPresenter.OnFlip();      
     }
     public void OnMoveButtonInput()
     {
         _uiPresenter.OnMove();
     }
-
-
-
-
-
-    public void UpdateHealthBar(int currentHealth, int maxHealth)
+    public void OnRestartButtonInput()
     {
-        _healthBar.value = (float)currentHealth / maxHealth;
+        
     }
+    
+
+
+
+    public void forDebug(string msg)
+    {
+        Debug.Log(msg);
+    }
+
+
+    #region Methods for Test
+    public void MoveTest(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+            _uiPresenter.OnMove();
+    }
+    public void FlipTest(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+            _uiPresenter.OnFlip();
+    }
+    #endregion
 }

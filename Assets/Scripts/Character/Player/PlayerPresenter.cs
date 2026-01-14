@@ -1,18 +1,21 @@
+using System;
 using UnityEngine;
+using Game.Events;
+using UnityEngine.Tilemaps;
 
 
 public interface IPlayerPresenter
 {
     void Onhit(int damage);
-    void OnMove(bool isLeft);
-    void OnMoveInput();
-    void OnFlipInput();
+    void OnMoveRequest();
+    void OnFlipRequest();
     int UpdateHP();
     int GetMaxHP();
 }
 
-public class PlayerPresenter : IPlayerPresenter
+public class PlayerPresenter : IPlayerPresenter, IEventBusAware
 {
+    #region Constructor
     private PlayerModel _playerModel;
     private IPlayerView _playerView;
 
@@ -20,19 +23,16 @@ public class PlayerPresenter : IPlayerPresenter
     {
         _playerModel = playerModel;
         _playerView = playerView;
-
-        _uiPresenter.OnMoveInput += OnMoveInput;
-        _uiPresenter.OnFlipInput += OnFlipInput;
-
-        RuntimeManager.Instance.SetPlayerPresenter(this);
     }
+    #endregion
 
     #region References
-    [SerializeField] private IUIPresenter _uiPresenter;
+    private IEventBus _eventBus;
     #endregion
 
     #region Events
-
+    private IDisposable _moveSub;
+    private IDisposable _flipSub;
     #endregion
     #region Fields
     private Vector2 _position = new Vector2(5, 0);
@@ -62,28 +62,28 @@ public class PlayerPresenter : IPlayerPresenter
         }
     }
 
-    public void OnMove(bool isLeft)
-    {
-        if(isLeft)
-            _position += new Vector2(-1, -1);
-        else
-            _position += new Vector2(1, -1);
-
-        CheckTile(_position);
-    }
-
-    public void OnMoveInput()
+    public void OnMoveRequest()
     {
         if(_isLeft)
             _position += new Vector2(-1, -1);
         else
             _position += new Vector2(1, -1);
-
+        _playerView.SetPosition();
         CheckTile(_position);
+
+        TileDrawer.Instance.UpdateTile();
     }
 
-    public void OnFlipInput()
+    public void OnFlipRequest()
     {
         _isLeft = !_isLeft;
+        _playerView.SetDiraction();
+    }
+
+    public void SetEventBus(IEventBus bus)
+    {
+        _eventBus = bus;
+        _moveSub = _eventBus.Subscribe<OnMovePressed>(_ => OnMoveRequest());
+        _flipSub = _eventBus.Subscribe<OnFlipPressed>(_ => OnFlipRequest());
     }
 }

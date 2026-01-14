@@ -1046,19 +1046,28 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "0ea144f1-5deb-4209-b903-532fe90ad1fe",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Flip",
+                    "type": "Button",
+                    "id": "98a5a86c-683d-4fc2-990a-026e81ac9279",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "c43d0f9e-44c0-48a8-a34d-5206abc72835",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1068,12 +1077,23 @@
                 },
                 {
                     "name": "",
-                    "id": "45db0d44-0abc-4bf3-adc8-91ef52fb5150",
-                    "path": "<Keyboard>/d",
+                    "id": "e301f636-7da3-4343-b0ae-827e762eda99",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "Flip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4dbf1daf-6b54-416e-a640-4bf1e60d24fd",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flip",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

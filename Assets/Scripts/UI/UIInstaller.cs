@@ -2,14 +2,21 @@ using UnityEngine;
 
 public class UIInstaller : MonoBehaviour
 {
-    [SerializeField] private UIView _uiView;
+    [SerializeField] private IUIView _uiView;
     private UIModel _uiModel;
-    private UIPresenter _uiPresenter;
+    private IUIPresenter _uiPresenter;
+
+    [SerializeField] private EventBus _eventBus;
 
     public void Awake()
     {
-        var _uiModel = new UIModel();
-        var _uiPresenter = new UIPresenter(_uiModel, _uiView); 
+        _uiView = GetComponent<IUIView>();
+        _uiModel = new UIModel();
+        _uiPresenter = new UIPresenter(_uiModel, _uiView); 
         _uiView.InitUIView(_uiPresenter);
+        if (_uiPresenter is IEventBusAware busAware)
+        {
+            busAware.SetEventBus(_eventBus);
+        }
     }
 }
