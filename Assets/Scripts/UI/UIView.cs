@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System;
 using System.Threading;
 using UnityEngine.InputSystem;
-using UnityEditor.SearchService;
 
 public interface IUIView
 {
@@ -33,7 +32,7 @@ public class UIView : MonoBehaviour, IUIView
     
     public void OnFlipButtonInput()
     {
-        _uiPresenter.OnFlipRequest();      
+        _uiPresenter.OnFlipRequest();  
     }
     public void OnMoveButtonInput()
     {

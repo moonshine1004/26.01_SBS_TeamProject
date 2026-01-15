@@ -85,6 +85,7 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     public void OnRestartGame()
     {
         _position = new Vector2(5, 0);
+        _isLeft = true;
         _playerView.SetStartPosition();
     }
     #endregion

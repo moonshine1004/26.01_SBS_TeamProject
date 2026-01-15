@@ -73,6 +73,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _isLeft = true;
         _targetPosition = new Vector3(0, 0, 0);
         transform.position = new Vector3(0, 0, 0);
+        transform.localScale = new (1, -1, 1);
     }
     #endregion
 }
