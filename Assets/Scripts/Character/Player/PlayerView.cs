@@ -7,6 +7,7 @@ public interface IPlayerView
     void forDebug(string msg);
     void SetDiraction();
     void SetPosition();
+    void SetStartPosition();
 }
 
 public class PlayerView : MonoBehaviour, IPlayerView
@@ -33,7 +34,6 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        _touchedPosition = _playerInput.actions.FindAction("Touch/GetPosition", true);
     }
     private void Update()
     {
@@ -43,10 +43,11 @@ public class PlayerView : MonoBehaviour, IPlayerView
 
 
 
-
+    #region IPlayerView Interface Implemetation
     public void SetDiraction()
     {
         _isLeft = !_isLeft;
+        transform.localScale = -transform.localScale; // 애니메이터 추가에 따라 수정 요망
     }
     public void SetPosition()
     {
@@ -66,4 +67,12 @@ public class PlayerView : MonoBehaviour, IPlayerView
     {
         Debug.Log(msg);
     }
+
+    public void SetStartPosition()
+    {
+        _isLeft = true;
+        _targetPosition = new Vector3(0, 0, 0);
+        transform.position = new Vector3(0, 0, 0);
+    }
+    #endregion
 }

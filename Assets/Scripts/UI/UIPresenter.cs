@@ -3,8 +3,10 @@ using Game.Events;
 
 public interface IUIPresenter
 {
-    void OnMove();
-    void OnFlip();
+    void OnMoveRequest();
+    void OnFlipRequest();
+    void OnGameOverRequest();
+    void OnRestartRequest();
 }
 
 public class UIPresenter : IUIPresenter, IEventBusAware
@@ -22,19 +24,32 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     
     private IEventBus _eventBus;
 
-
-    public void OnFlip()
+    #region IUIPresenter Interface Implementation
+    public void OnFlipRequest()
     {
         _eventBus.Publish(new OnFlipPressed());
     }
 
-    public void OnMove()
+    public void OnMoveRequest()
     {
         _eventBus.Publish(new OnMovePressed());
     }
+    public void OnGameOverRequest()
+    {
+        _uiView.TogglePopUp(SceneState.GameOver);
+    }
+    public void OnRestartRequest()
+    {
+        GameSceneManager.Instance.RestartGame();
+        _eventBus.Publish(new OnRestartGame());
+        _uiView.ClearPopUp();
+    }
+    #endregion
 
     public void SetEventBus(IEventBus bus)
     {
         _eventBus = bus;
     }
+
+    
 }

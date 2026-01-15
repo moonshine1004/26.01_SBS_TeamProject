@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Game.Events;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 
 public interface IPlayerPresenter
@@ -9,8 +10,7 @@ public interface IPlayerPresenter
     void Onhit(int damage);
     void OnMoveRequest();
     void OnFlipRequest();
-    int UpdateHP();
-    int GetMaxHP();
+    void OnRestartGame();
 }
 
 public class PlayerPresenter : IPlayerPresenter, IEventBusAware
@@ -33,6 +33,7 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     #region Events
     private IDisposable _moveSub;
     private IDisposable _flipSub;
+    private IDisposable _restarttGame;
     #endregion
     #region Fields
     private Vector2 _position = new Vector2(5, 0);
@@ -45,23 +46,25 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     {
         _playerModel.HP -= damage;
     }
-    public int UpdateHP()
-    {
-        return _playerModel.HP;
-    }
-    public int GetMaxHP()
-    {
-        return _playerModel.MaxHP;
-    }
     public void CheckTile(Vector2 position)
     {
         if (!TileDrawer.Instance.CheckTile(position))
         {
-            Onhit(1);
-            _playerView.forDebug("체력 -1");
+            _playerView.forDebug("Death");
+            GameSceneManager.Instance.GameOver();
         }
     }
+    
+    public void SetEventBus(IEventBus bus)
+    {
+        _eventBus = bus;
+        _moveSub = _eventBus.Subscribe<OnMovePressed>(_ => OnMoveRequest());
+        _flipSub = _eventBus.Subscribe<OnFlipPressed>(_ => OnFlipRequest());
+        _restarttGame = _eventBus.Subscribe<OnRestartGame>(_ => OnRestartGame());
+    }
 
+    
+    #region IPlayerPresenter Interface Implementation
     public void OnMoveRequest()
     {
         if(_isLeft)
@@ -79,11 +82,10 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
         _isLeft = !_isLeft;
         _playerView.SetDiraction();
     }
-
-    public void SetEventBus(IEventBus bus)
+    public void OnRestartGame()
     {
-        _eventBus = bus;
-        _moveSub = _eventBus.Subscribe<OnMovePressed>(_ => OnMoveRequest());
-        _flipSub = _eventBus.Subscribe<OnFlipPressed>(_ => OnFlipRequest());
+        _position = new Vector2(5, 0);
+        _playerView.SetStartPosition();
     }
+    #endregion
 }

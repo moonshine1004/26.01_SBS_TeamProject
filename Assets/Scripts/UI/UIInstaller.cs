@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIInstaller : MonoBehaviour
 {
@@ -18,5 +19,6 @@ public class UIInstaller : MonoBehaviour
         {
             busAware.SetEventBus(_eventBus);
         }
+        GameSceneManager.Instance.InitUI(_uiPresenter);
     }
 }
