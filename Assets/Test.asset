@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
   maxHP: 10
+  animatorController: {fileID: 9100000, guid: 50b0511c7a5534e2aaef871a5b93ce9e, type: 2}

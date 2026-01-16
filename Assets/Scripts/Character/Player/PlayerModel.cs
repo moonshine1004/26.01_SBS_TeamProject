@@ -36,3 +36,11 @@ public class PlayerModel
     }
 
 }
+
+public sealed class Player01Model : PlayerModel
+{
+    public Player01Model(int maxHP) : base(maxHP)
+    {
+        
+    }
+}

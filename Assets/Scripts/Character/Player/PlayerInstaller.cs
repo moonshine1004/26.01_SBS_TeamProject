@@ -3,11 +3,12 @@ using UnityEngine;
 public class PlayerInstaller : MonoBehaviour
 {
     [SerializeField] private IPlayerView _playerView;
-    [SerializeField] private PlayerStatSO _playerStat;
+    [SerializeField] private PlayerModelSO _playerStat;
     private PlayerModel _playerModel;
     private IPlayerPresenter _playerPresenter;
 
     [SerializeField] private EventBus _eventBus;
+
     #region Unity Lifecycle
     public void Awake()
     {
@@ -18,12 +19,12 @@ public class PlayerInstaller : MonoBehaviour
         {
             busAware.SetEventBus(_eventBus);
         }
-        _playerView.InitPlayerView(_playerPresenter);
+        _playerView.InstallPlayerView(_playerPresenter, _playerStat.animatorController);
     }
     #endregion
 
 
-    private PlayerModel InitPlayerModel(PlayerStatSO playerStat)
+    private PlayerModel InitPlayerModel(PlayerModelSO playerStat)
     {
         return new PlayerModel(playerStat.maxHP);
     }

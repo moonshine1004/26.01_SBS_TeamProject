@@ -1863,6 +1863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f0aa10b44d744a9493bb679ff6bedb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerView
+  _animatorController: {fileID: 0}
 --- !u!114 &1540127342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1960,7 +1961,7 @@ Animator:
   m_GameObject: {fileID: 1540127339}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 50b0511c7a5534e2aaef871a5b93ce9e, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2443,6 +2444,6 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 135998038}
   - {fileID: 1249428172}
-  - {fileID: 1540127344}
   - {fileID: 570464843}
+  - {fileID: 1540127344}
   - {fileID: 1641436467}

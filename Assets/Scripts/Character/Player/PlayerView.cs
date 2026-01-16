@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public interface IPlayerView
 {
-    void InitPlayerView(IPlayerPresenter playerPresenter);
+    void InstallPlayerView(IPlayerPresenter playerPresenter, RuntimeAnimatorController animatorController);
     void forDebug(string msg);
     void SetDiraction();
     void SetPosition();
@@ -18,6 +18,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private PlayerInput _playerInput;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
+    [SerializeField] private RuntimeAnimatorController _animatorController;
     #endregion
     #region Fields
     private float _xMove = 2.5f;
@@ -28,9 +29,10 @@ public class PlayerView : MonoBehaviour, IPlayerView
     #endregion
 
 
-    public void InitPlayerView(IPlayerPresenter playerPresenter)
+    public void InstallPlayerView(IPlayerPresenter playerPresenter, RuntimeAnimatorController animatorController)
     {
         _playerPresenter = playerPresenter;
+        _animatorController = animatorController;
     }
     #region Unity LifeCycle
     private void Awake()
@@ -43,6 +45,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     {
         _startPosition = transform.position;
         _targetPosition = _startPosition;
+        _animator.runtimeAnimatorController = _animatorController;
     }
     private void Update()
     {
