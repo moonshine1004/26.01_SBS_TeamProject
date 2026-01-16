@@ -23,8 +23,8 @@ public class TileDrawer : MonoBehaviour
     public Vector2Int min = new(0, -80); // 가로 칸 수, 세로 칸 수 -> 내려가는 게임이므로 y는 음수
     public Vector2Int max = new( 10, 0); // 가로 칸 수, 세로 칸 수 -> 가로는 10칸
     public Vector3 startPosition;
-    public readonly float cellWidth = 1f;
-    public readonly float cellHeight = 1f;
+    public float cellWidth = 1f;
+    public float cellHeight = 1f;
     public Vector3 weight = new Vector3(0f, -0.5f, 0f); // 타일의 중심을 맞추기 위한 보정값
     private int _tilePoolIndex = 0;
     private int _lastXPos;
