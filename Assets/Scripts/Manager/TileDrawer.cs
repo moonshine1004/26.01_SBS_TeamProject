@@ -52,7 +52,7 @@ public class TileDrawer : MonoBehaviour
     }
     public void CreatTiles() // 논리적 위치 생성
     {
-        int x = 5;
+        int x = 2; // 시작 칸
         for (int y = 0; y > -20; y--)
         {
             _tileGrid.Add(new Vector2Int(x, y));

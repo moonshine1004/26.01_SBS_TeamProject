@@ -28,7 +28,6 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     public void OnFlipRequest()
     {
         _eventBus.Publish(new OnFlipPressed());
-        _eventBus.Publish(new OnMovePressed());
     }
 
     public void OnMoveRequest()

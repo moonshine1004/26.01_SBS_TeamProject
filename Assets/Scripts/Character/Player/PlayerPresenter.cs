@@ -36,7 +36,8 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     private IDisposable _restarttGame;
     #endregion
     #region Fields
-    private Vector2 _position = new Vector2(5, 0);
+    private Vector2 _startPosition = new Vector2(2,0);
+    private Vector2 _position = new Vector2(2, 0);
     private bool _isLeft = true;
     #endregion
 
@@ -81,10 +82,11 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     {
         _isLeft = !_isLeft;
         _playerView.SetDiraction();
+        OnMoveRequest();
     }
     public void OnRestartGame()
     {
-        _position = new Vector2(5, 0);
+        _position = _startPosition;
         _isLeft = true;
         _playerView.SetStartPosition();
     }

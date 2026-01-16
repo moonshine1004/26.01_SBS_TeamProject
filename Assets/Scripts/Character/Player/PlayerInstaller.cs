@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerInstaller : MonoBehaviour
 {
     [SerializeField] private IPlayerView _playerView;
-    [SerializeField] private PlayerStat _playerStat;
+    [SerializeField] private PlayerStatSO _playerStat;
     private PlayerModel _playerModel;
     private IPlayerPresenter _playerPresenter;
 
@@ -23,7 +23,7 @@ public class PlayerInstaller : MonoBehaviour
     #endregion
 
 
-    private PlayerModel InitPlayerModel(PlayerStat playerStat)
+    private PlayerModel InitPlayerModel(PlayerStatSO playerStat)
     {
         return new PlayerModel(playerStat.maxHP);
     }

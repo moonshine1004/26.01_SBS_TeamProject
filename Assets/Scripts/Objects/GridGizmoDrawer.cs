@@ -24,6 +24,9 @@ public class GridGizmoDrawer : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        cellHeight = TileDrawer.Instance.cellHeight;
+        cellWidth = TileDrawer.Instance.cellWidth;
+        
         for (int y = min.y; y <= max.y; y++)
         for (int x = min.x; x <= max.x; x++)
         {
