@@ -62,7 +62,7 @@ public class GameSceneManager : MonoBehaviour
         Vector3 lastPos = top.transform.position - new Vector3(0, 10.4f,0) + _weight;
         for(int i = 0; i < _sceneData.ChangeStrategy().endLine; i++)
         {
-            var middle = Instantiate(_stagePrefabs[Random.Range(1, _stagePrefabs.Count)]);
+            var middle = Instantiate(_stagePrefabs[Random.Range(1, _stagePrefabs.Count -1)]);
             middle.transform.position = lastPos;
             lastPos -= new Vector3(0, middle.GetComponent<Renderer>().bounds.size.y,0);
         }
