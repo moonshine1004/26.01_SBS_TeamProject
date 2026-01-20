@@ -21,8 +21,9 @@ public class PlayerView : MonoBehaviour, IPlayerView
     [SerializeField] private RuntimeAnimatorController _animatorController;
     #endregion
     #region Fields
-    private float _xMove = 2.5f;
-    private float _yMove = 2.5f;
+    private float _xMove = ConstVariable.xDistance;
+    private float _yMove = ConstVariable.yDistance;
+    private bool _canMove = true;
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private bool _isLeft = true;
@@ -49,7 +50,13 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     private void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 10f * Time.deltaTime);
+        if (_canMove)
+        {
+            _canMove = false;
+            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 30f * Time.deltaTime);
+            _canMove = true;
+        }
+        
     }
     #endregion
 

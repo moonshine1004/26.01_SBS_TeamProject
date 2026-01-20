@@ -74,16 +74,17 @@ public class GameSceneManager : MonoBehaviour
         if (_sceneState == SceneState.GameOver) return;
         _sceneState = SceneState.GameOver;
         Time.timeScale = 0f;
+        
         _uiPresenter.OnGameOverRequest();
 
     }
     public void RestartGame()
     {
         if (_sceneState != SceneState.GameOver) return;
+        ScoreManager.Instance.ResetTileScore();
+        _uiPresenter.OnUpdateScoreRequest();
         Time.timeScale = 1f;
         TileDrawer.Instance.OnRestart();
-
-
         _sceneState = SceneState.Playing;
     }
 

@@ -23,8 +23,8 @@ public class TileDrawer : MonoBehaviour
     public Vector2Int min = new(0, -80); // 가로 칸 수, 세로 칸 수 -> 내려가는 게임이므로 y는 음수
     public Vector2Int max = new( 10, 0); // 가로 칸 수, 세로 칸 수 -> 가로는 10칸
     public Vector3 startPosition;
-    public float cellWidth = 1f;
-    public float cellHeight = 1f;
+    private float cellWidth = ConstVariable.xDistance;
+    private float cellHeight = ConstVariable.yDistance;
     public Vector3 weight = new Vector3(0f, -0.5f, 0f); // 타일의 중심을 맞추기 위한 보정값
     private int _tilePoolIndex = 0;
     private int _lastXPos;
@@ -39,7 +39,7 @@ public class TileDrawer : MonoBehaviour
     {
         startPosition = transform.position; // 씬 상의 실제 위치
         CreatTiles();
-        Draw();
+        DrawTiles();
     }
     public void OnRestart()
     {
@@ -48,7 +48,7 @@ public class TileDrawer : MonoBehaviour
         max = new(10, 0);
         _tilePoolIndex = 0;
         CreatTiles();
-        Draw();
+        DrawTiles();
     }
     public void CreatTiles() // 논리적 위치 생성
     {
@@ -74,7 +74,7 @@ public class TileDrawer : MonoBehaviour
         _lastYPos = TilePooling.Instance.poolAmount * -1;
 
     }
-    private void Draw()
+    private void DrawTiles()
     {
         for (int y = max.y; y >= min.y; y--)
             for (int x = min.x; x <= max.x; x++)

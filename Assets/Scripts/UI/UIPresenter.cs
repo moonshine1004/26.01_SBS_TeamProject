@@ -7,6 +7,7 @@ public interface IUIPresenter
     void OnFlipRequest();
     void OnGameOverRequest();
     void OnRestartRequest();
+    void OnUpdateScoreRequest();
 }
 
 public class UIPresenter : IUIPresenter, IEventBusAware
@@ -44,11 +45,16 @@ public class UIPresenter : IUIPresenter, IEventBusAware
         _eventBus.Publish(new OnRestartGame());
         _uiView.ClearPopUp();
     }
+    public void OnUpdateScoreRequest()
+    {
+        _uiView.OnScoreUpdate(ScoreManager.Instance.TileScore);
+    }
     #endregion
 
     public void SetEventBus(IEventBus bus)
     {
         _eventBus = bus;
+        _eventBus.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
     }
 
     

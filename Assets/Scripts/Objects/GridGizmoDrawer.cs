@@ -9,24 +9,17 @@ public class GridGizmoDrawer : MonoBehaviour
     public Vector2Int max = new( 10, 0); // 가로 칸 수, 세로 칸 수 -> 가로는 10칸
     public Vector3 startPosition;
 
-    public float cellWidth = 1f;
-    public float cellHeight = 1f;
+    private float cellWidth = ConstVariable.xDistance;
+    private float cellHeight = ConstVariable.yDistance;
 
     public void Start()
     {
         startPosition = transform.position;
 
     }
-    private Vector3 GridToWorld(Vector2Int position)
-    {
-        return transform.position + new Vector3(position.x * cellWidth, position.y * cellHeight, 0f);
-    }
-
+    
     private void OnDrawGizmos()
-    {
-        cellHeight = TileDrawer.Instance.cellHeight;
-        cellWidth = TileDrawer.Instance.cellWidth;
-        
+    {   
         for (int y = min.y; y <= max.y; y++)
         for (int x = min.x; x <= max.x; x++)
         {
@@ -38,6 +31,12 @@ public class GridGizmoDrawer : MonoBehaviour
                 Gizmos.DrawWireCube(center, size);
         }
     }
+
+    private Vector3 GridToWorld(Vector2Int position)
+    {
+        return transform.position + new Vector3(position.x * cellWidth, position.y * cellHeight, 0f);
+    }
+
 }
 
 

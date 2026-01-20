@@ -33,7 +33,8 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
     #region Events
     private IDisposable _moveSub;
     private IDisposable _flipSub;
-    private IDisposable _restarttGame;
+    private IDisposable _updateTileScore;
+    private IDisposable _restartGame;
     #endregion
     #region Fields
     private Vector2 _startPosition = new Vector2(2,0);
@@ -61,7 +62,7 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
         _eventBus = bus;
         _moveSub = _eventBus.Subscribe<OnMovePressed>(_ => OnMoveRequest());
         _flipSub = _eventBus.Subscribe<OnFlipPressed>(_ => OnFlipRequest());
-        _restarttGame = _eventBus.Subscribe<OnRestartGame>(_ => OnRestartGame());
+        _restartGame = _eventBus.Subscribe<OnRestartGame>(_ => OnRestartGame());
     }
 
     
@@ -73,6 +74,8 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
         else
             _position += new Vector2(1, -1);
         _playerView.SetPosition();
+        _eventBus.Publish(new OnUpdateTileScore());
+        
         CheckTile(_position);
 
         TileDrawer.Instance.UpdateTile();

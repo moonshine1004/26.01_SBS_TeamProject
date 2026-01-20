@@ -30,17 +30,14 @@ public class PlayerModel
 
     public int MaxHP => _maxHP;
 
-    public PlayerModel(int maxHP)
+    public PlayerModel()
     {
-        _maxHP = maxHP;
+        
     }
 
 }
 
 public sealed class Player01Model : PlayerModel
 {
-    public Player01Model(int maxHP) : base(maxHP)
-    {
-        
-    }
+    
 }

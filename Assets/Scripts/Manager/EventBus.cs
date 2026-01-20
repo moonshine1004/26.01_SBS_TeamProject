@@ -15,6 +15,19 @@ public interface IEventBusAware
 
 public class EventBus : MonoBehaviour, IEventBus
 {
+    private static EventBus _instance;
+    public static EventBus Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindFirstObjectByType<EventBus>();
+            }
+            return _instance;
+        }
+    }
+    
     /// <summary>
     /// 키: 이벤트 타입
     /// 값: 해당 타입을 구독한 핸들러(메서드) 리스트
@@ -45,9 +58,6 @@ public class EventBus : MonoBehaviour, IEventBus
             handler(evt);
         }
     }
-
-
-
 
     private void Unsubscribe<T>(Action<T> handler)
     {
