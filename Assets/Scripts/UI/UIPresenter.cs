@@ -8,6 +8,7 @@ public interface IUIPresenter
     void OnGameOverRequest();
     void OnRestartRequest();
     void OnUpdateScoreRequest();
+    void OnUpdateTimerRequest();
 }
 
 public class UIPresenter : IUIPresenter, IEventBusAware
@@ -24,6 +25,13 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     #endregion
     
     private IEventBus _eventBus;
+
+    public void SetEventBus(IEventBus bus)
+    {
+        _eventBus = bus;
+        _eventBus.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
+        EventBus.Instance.Subscribe<OnTimeChange>(_ => OnUpdateTimerRequest());
+    }
 
     #region IUIPresenter Interface Implementation
     public void OnFlipRequest()
@@ -47,15 +55,15 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     }
     public void OnUpdateScoreRequest()
     {
-        _uiView.OnScoreUpdate(ScoreManager.Instance.TileScore);
+        _uiView.UpdateScore();
+    }
+    public void OnUpdateTimerRequest()
+    {
+        _uiView.UpdateTimer();
     }
     #endregion
 
-    public void SetEventBus(IEventBus bus)
-    {
-        _eventBus = bus;
-        _eventBus.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
-    }
+    
 
     
 }

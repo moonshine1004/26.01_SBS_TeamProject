@@ -11,14 +11,15 @@ public interface IUIView
     void forDebug(string msg);
     void TogglePopUp(SceneState sceneState);
     void ClearPopUp();
-    void OnScoreUpdate(int score);
+    void UpdateScore();
+    void UpdateTimer();
 
 }
 
 public class UIView : MonoBehaviour, IUIView
 {
     private IUIPresenter _uiPresenter;
-    
+    public event Action TestEvent;
     public void InitUIView(IUIPresenter uiPresenter)
     {
         _uiPresenter = uiPresenter;
@@ -37,23 +38,7 @@ public class UIView : MonoBehaviour, IUIView
     #region Unity Lifecycle Methods
     #endregion
 
-    public void OnFlipButtonInput()
-    {
-        _uiPresenter.OnFlipRequest();  
-    }
-    public void OnMoveButtonInput()
-    {
-        _uiPresenter.OnMoveRequest();
-    }
-    public void OnRestartButtonInput()
-    {
-        _uiPresenter.OnRestartRequest();
-    }
-    public void OnScoreUpdate(int score)
-    {
-        _tileScore.text = $"{score}";
-    }
-
+    
 
 
     public void forDebug(string msg)
@@ -83,7 +68,7 @@ public class UIView : MonoBehaviour, IUIView
             case SceneState.GameOver:
                 {
                     _highScore.text = $"High Score: {ScoreManager.Instance.HighScore}";
-                    _currentScore.text = $"Your Score: {ScoreManager.Instance.TileScore}";
+                    _currentScore.text = $"Your Score: {ScoreManager.Instance.CurrentScore}";
                     _gameOverPopUp.gameObject.SetActive(true);
                     break;
                 }
@@ -91,9 +76,30 @@ public class UIView : MonoBehaviour, IUIView
                 break;
         }
     }
+    public void OnFlipButtonInput()
+    {
+        _uiPresenter.OnFlipRequest();  
+    }
+    public void OnMoveButtonInput()
+    {
+        _uiPresenter.OnMoveRequest();
+    }
+    public void OnRestartButtonInput()
+    {
+        _uiPresenter.OnRestartRequest();
+    }
+    public void UpdateScore()
+    {
+        _tileScore.text = $"{ScoreManager.Instance.TileScore}";
+    }
     public void ClearPopUp()
     {
         _gameOverPopUp.gameObject.SetActive(false);
+    }
+
+    public void UpdateTimer()
+    {
+
     }
     #endregion
 }

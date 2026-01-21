@@ -8,4 +8,5 @@ namespace Game.Events
     public readonly struct OnUpdateTileScore { }
     public readonly struct OnTimeChange { }
     public readonly struct OnTimeOver { }
+    public readonly struct OnButtonPressed { }
 }
