@@ -27,6 +27,7 @@ public class TileDrawer : MonoBehaviour
     private float cellHeight = ConstVariable.yDistance;
     public Vector3 weight = new Vector3(0f, -0.5f, 0f); // 타일의 중심을 맞추기 위한 보정값
     private int _tilePoolIndex = 0;
+    private int _tilePoolWeight = 0;
     private int _lastXPos;
     private int _lastYPos;
     #endregion
@@ -53,7 +54,7 @@ public class TileDrawer : MonoBehaviour
     public void CreatTiles() // 논리적 위치 생성
     {
         int x = 2; // 시작 칸
-        for (int y = 0; y > -20; y--)
+        for (int y = 0; y > -TilePooling.Instance.PoolAmount; y--)
         {
             _tileGrid.Add(new Vector2Int(x, y));
 
@@ -71,7 +72,7 @@ public class TileDrawer : MonoBehaviour
             }
         }
         _lastXPos = x;
-        _lastYPos = TilePooling.Instance.poolAmount * -1;
+        _lastYPos = -TilePooling.Instance.PoolAmount;
 
     }
     private void DrawTiles()
@@ -98,7 +99,10 @@ public class TileDrawer : MonoBehaviour
     }
     public void UpdateTile()
     {
-        if(_tilePoolIndex == TilePooling.Instance.poolAmount)
+        _tilePoolWeight++;
+        if(_tilePoolWeight <7) return;
+        
+        if(_tilePoolIndex == TilePooling.Instance.PoolAmount)
         {
             _tilePoolIndex = 0;
         }

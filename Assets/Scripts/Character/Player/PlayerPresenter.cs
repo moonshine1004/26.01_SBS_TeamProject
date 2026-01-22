@@ -53,7 +53,7 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
         if (!TileDrawer.Instance.CheckTile(position))
         {
             _playerView.forDebug("Death");
-            GameSceneManager.Instance.GameOver();
+            GameStageManager.Instance.GameOver();
         }
     }
     

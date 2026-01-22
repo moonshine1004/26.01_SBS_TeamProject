@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
     #region Unity Lifecycle
     private void Awake()
     {
-        // 점수 불러오기
+        // 점수 불러오기 기능 추가 필요
         _updateScore = EventBus.Instance.Subscribe<OnUpdateTileScore>(_ => AddTileScore());
     }
     #endregion
@@ -35,13 +35,21 @@ public class ScoreManager : MonoBehaviour
     {
         get => _tileScore;
     }
+    public int CurrentScore
+    {
+        get
+        {
+            _currentScore = _currentScore = ScoreUtil.CalculateClearScore(TileScore, GameStageManager.Instance.RemainingTime, 1);
+            return _currentScore;
+        }
+    }
     public int HighScore
     {
         get
         {
-            if(_tileScore > _highScore)
+            if(CurrentScore > _highScore)
             {
-                _highScore = _tileScore;
+                _highScore = CurrentScore;
             }
             return _highScore;
         } 

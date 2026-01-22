@@ -71,6 +71,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     public void SetPosition()
     {
+        if(_canMove == false) return;
         if(_isLeft)
         {
             _targetPosition = transform.position + new Vector3(-_xMove, -_yMove, 0);

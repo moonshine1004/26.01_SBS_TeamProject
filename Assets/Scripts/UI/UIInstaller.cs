@@ -19,6 +19,6 @@ public class UIInstaller : MonoBehaviour
         {
             busAware.SetEventBus(_eventBus);
         }
-        GameSceneManager.Instance.InitUI(_uiPresenter);
+        GameStageManager.Instance.InitUI(_uiPresenter);
     }
 }
