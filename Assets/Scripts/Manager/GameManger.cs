@@ -31,4 +31,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void OnStartButtonClick()
+    {
+        Debug.Log("Start Button Clicked");
+    }
+
 }

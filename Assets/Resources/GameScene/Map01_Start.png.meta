@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 0bbbc80b3308af54da79b7f47acf0194
+guid: 8134cd4235fff41fea3cc347d402445e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1194864638225870085
-    second: UI_Button_ControlFlip__Pressed_0_0
+      213: 3410506473900485814
+    second: Map01_Start_0
+  - first:
+      213: -7101450597387885450
+    second: Map01_Start_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +129,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Button_ControlFlip__Pressed_0_0
+      name: Map01_Start_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 19
-        width: 602
-        height: 602
+        x: 636
+        y: 1171
+        width: 227
+        height: 227
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +144,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bf21fd331fcfa6fe0800000000000000
-      internalID: -1194864638225870085
+      spriteID: 6bc2201819d845f20800000000000000
+      internalID: 3410506473900485814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map01_Start_1
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 83
+        width: 660
+        height: 1062
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 674a5b88e44927d90800000000000000
+      internalID: -7101450597387885450
       vertices: []
       indices: 
       edges: []
@@ -161,7 +186,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_Button_ControlFlip__Pressed_0_0: -1194864638225870085
+      Map01_Start_0: 3410506473900485814
+      Map01_Start_1: -7101450597387885450
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

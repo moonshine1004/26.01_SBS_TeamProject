@@ -73,7 +73,7 @@ public class PlayerPresenter : IPlayerPresenter, IEventBusAware
             _position += new Vector2(-1, -1);
         else
             _position += new Vector2(1, -1);
-        _playerView.SetPosition();
+        _playerView.SetPosition();  
         _eventBus.Publish(new OnUpdateTileScore());
         
         CheckTile(_position);

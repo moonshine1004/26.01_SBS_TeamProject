@@ -41,7 +41,7 @@ public class GameStageManager : MonoBehaviour
     }
     #endregion
 
-
+    public int TestTime = 1000;
 
 
     #region Unity Lifecycle
@@ -54,7 +54,7 @@ public class GameStageManager : MonoBehaviour
     {
         TileDrawer.Instance.OnStart();
         DrawSatge();
-        StartTimer(60);
+        StartTimer(TestTime);
     }
     private void Update()
     {
@@ -72,12 +72,10 @@ public class GameStageManager : MonoBehaviour
 
     private void DrawSatge()
     {
-        var top = Instantiate(_stagePrefabs[0]);
-        top.transform.position = new Vector3(17, 10.4f, 0);
-        Vector3 lastPos = top.transform.position - new Vector3(0, 10.4f,0) + _weight;
+        Vector3 lastPos = new Vector3(17, 0, 0) + _weight;
         for(int i = 0; i < _sceneData.endLine; i++)
         {
-            var middle = Instantiate(_stagePrefabs[Random.Range(1, _stagePrefabs.Count -1)]);
+            var middle = Instantiate(_stagePrefabs[Random.Range(0, _stagePrefabs.Count -1)]);
             middle.transform.position = lastPos;
             lastPos -= new Vector3(0, middle.GetComponent<Renderer>().bounds.size.y,0);
         }
@@ -116,6 +114,7 @@ public class GameStageManager : MonoBehaviour
         if (_sceneState != SceneState.GameOver) return;
         ScoreManager.Instance.ResetTileScore();
         _uiPresenter.OnUpdateScoreRequest();
+        StartTimer(TestTime);
         Time.timeScale = 1f;
         TileDrawer.Instance.OnRestart();
         _sceneState = SceneState.Playing;

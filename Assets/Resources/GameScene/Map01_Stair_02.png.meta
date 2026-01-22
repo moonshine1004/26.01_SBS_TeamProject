@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0bbbc80b3308af54da79b7f47acf0194
+guid: 7830dad0b362d4bd0b0aa0309d9e138e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1194864638225870085
-    second: UI_Button_ControlFlip__Pressed_0_0
+      213: 6770346210416791565
+    second: Map01_Stair_02_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Button_ControlFlip__Pressed_0_0
+      name: Map01_Stair_02_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 19
-        width: 602
-        height: 602
+        x: 119
+        y: 82
+        width: 254
+        height: 132
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bf21fd331fcfa6fe0800000000000000
-      internalID: -1194864638225870085
+      spriteID: d001e4ee10a15fd50800000000000000
+      internalID: 6770346210416791565
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_Button_ControlFlip__Pressed_0_0: -1194864638225870085
+      Map01_Stair_02_0: 6770346210416791565
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -129,19 +129,19 @@ TextureImporter:
       name: Map01_StageMiddle03_0
       rect:
         serializedVersion: 2
-        x: 1095
-        y: 2351
-        width: 5262
-        height: 2620
+        x: 0
+        y: 0
+        width: 5238
+        height: 2431
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 84a3e2a38c3c88960800000000000000
+      spriteID: 8a4b27b72df2f48eeb42c371ea25910b
       internalID: 7604543235552066120
       vertices: []
       indices: 
@@ -159,7 +159,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Map01_StageMiddle03_0: 7604543235552066120
   mipmapLimitGroupName: 
