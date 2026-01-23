@@ -31,7 +31,7 @@ public class GameStageManager : MonoBehaviour
 
     #region Feilds
     [SerializeField] private Vector3 _weight = new(); // 두 번째 배경 이후의 위치값을 위한 가중치 
-    [SerializeField] private StageDataSO _sceneData; // 스테이지 정보가 담긴 스크립터블 오브젝트 -> 추후 게임 매니저가 게팅하도록 수정 요망
+    [SerializeField] private StageDataSO _stageData; 
     private SceneState _sceneState = SceneState.Playing;
     [SerializeField] private float _remainingTime;
     private bool _isTimerRunning = false;
@@ -41,20 +41,16 @@ public class GameStageManager : MonoBehaviour
     }
     #endregion
 
-    public int TestTime = 1000;
-
-
     #region Unity Lifecycle
     private void Awake()
     {   
-
-
+        EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGame());
     }   
-    private void Start()
+    private void OnStartGame()
     {
         TileDrawer.Instance.OnStart();
         DrawSatge();
-        StartTimer(TestTime);
+        StartTimer(_stageData.time);
     }
     private void Update()
     {
@@ -72,8 +68,9 @@ public class GameStageManager : MonoBehaviour
 
     private void DrawSatge()
     {
+        //12.75
         Vector3 lastPos = new Vector3(17, 0, 0) + _weight;
-        for(int i = 0; i < _sceneData.endLine; i++)
+        for(int i = 0; i < _stageData.endLine; i++)
         {
             var middle = Instantiate(_stagePrefabs[Random.Range(0, _stagePrefabs.Count -1)]);
             middle.transform.position = lastPos;
@@ -114,10 +111,15 @@ public class GameStageManager : MonoBehaviour
         if (_sceneState != SceneState.GameOver) return;
         ScoreManager.Instance.ResetTileScore();
         _uiPresenter.OnUpdateScoreRequest();
-        StartTimer(TestTime);
+        StartTimer(_stageData.time);
         Time.timeScale = 1f;
         TileDrawer.Instance.OnRestart();
         _sceneState = SceneState.Playing;
+    }
+    public void UpdateSceneData(StageDataSO stageData)
+    {
+        _stageData = stageData;
+        Debug.Log($"Stage Data Updated : StageID {stageData.stageID}");
     }
     
 

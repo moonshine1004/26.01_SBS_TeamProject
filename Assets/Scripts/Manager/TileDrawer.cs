@@ -25,7 +25,7 @@ public class TileDrawer : MonoBehaviour
     public Vector3 startPosition;
     private float cellWidth = ConstVariable.xDistance;
     private float cellHeight = ConstVariable.yDistance;
-    public Vector3 weight = new Vector3(0f, -0.5f, 0f); // 타일의 중심을 맞추기 위한 보정값
+    public Vector3 weight = new(); // 타일의 중심을 맞추기 위한 보정값
     private int _tilePoolIndex = 0;
     private int _tilePoolWeight = 0;
     private int _lastXPos;

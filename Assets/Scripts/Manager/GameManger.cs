@@ -1,24 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Events;
 
 public class GameManager : MonoBehaviour
 {
-    private GameManager _instance;
-    public GameManager Instance
+    private static GameManager _instance;
+    public static GameManager Instance
     {
         get
         {
-            if(_instance == null) _instance = new();
+            if (_instance == null)
+            {
+                _instance = FindFirstObjectByType<GameManager>();
+            }
             return _instance;
         }
     }
 
     [SerializeField] private List<StageDataSO> _stageDatas = new List<StageDataSO>();
-    private StageDataSO _currentStageDate;
-    public StageDataSO CurrentStageData
+    [SerializeField] private List<PlayerModelSO> _playerDatas = new List<PlayerModelSO>();
+
+    [SerializeField] private PlayerInstaller _playerInstaller;
+
+    #region Unity Lifecycle Methods
+    private void Start()
     {
-        get => _currentStageDate;
+        
     }
+    #endregion
 
     public void SwitchStage(int stageID)
     {
@@ -26,14 +35,42 @@ public class GameManager : MonoBehaviour
         {
             if(stageData.stageID == stageID)
             {
-                _currentStageDate = stageData;
+                GameStageManager.Instance.UpdateSceneData(stageData);
+                return;
             }
+        }
+    }
+    public void SwitchPlayer(int playerID)
+    {
+        foreach (PlayerModelSO playerData in _playerDatas)
+        {
+            if(playerData.id == playerID)
+            {
+                _playerInstaller.SwitchPlayer(playerData);
+                return;
+            }
+        }
+    }
+    public void Switch(ButtonType buttonType, int id)
+    {
+        switch (buttonType)
+        {
+            case ButtonType.PlayerSelect:
+                {
+                    SwitchPlayer(id);
+                }
+                break;
+            case ButtonType.StageSelect:
+                {
+                    SwitchStage(id);
+                }
+                break;
         }
     }
 
     public void OnStartButtonClick()
     {
-        Debug.Log("Start Button Clicked");
+        EventBus.Instance.Publish(new OnStartGame());
     }
 
 }

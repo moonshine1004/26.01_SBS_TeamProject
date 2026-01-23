@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2558e0d15843f4d3a899f3002eb4fb91
+guid: 8b1379e6d12a24ba28e39f3e2f77c5bd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2884331126091455358
-    second: Character_idle_02_0
+      213: 2111948211385942432
+    second: UI_Button_Map3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character_idle_02_0
+      name: UI_Button_Map3_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 250
-        height: 563
+        width: 640
+        height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 28467b66f1cc8f7d0800000000000000
-      internalID: -2884331126091455358
+      spriteID: 0a14eab65b52f4d10800000000000000
+      internalID: 2111948211385942432
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Character_idle_02_0: -2884331126091455358
+      UI_Button_Map3_0: 2111948211385942432
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

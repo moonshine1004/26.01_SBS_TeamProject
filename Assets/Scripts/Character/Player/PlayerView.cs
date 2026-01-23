@@ -9,8 +9,10 @@ public interface IPlayerView
     void forDebug(string msg);
     void SetDiraction();
     void SetPosition();
-    void SetStartPosition();
-    void OnStartButtonClick();
+    void SetStartGame();
+    void SetRestartGame();
+    void SetReturnLobby();
+    void SetDeath();
 }
 
 public class PlayerView : MonoBehaviour, IPlayerView
@@ -28,7 +30,8 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private float _xMove = ConstVariable.xDistance;
     private float _yMove = ConstVariable.yDistance;
     private bool _canMove = false;
-    private Vector3 _startPosition;
+    private Vector3 _lobbyPosition;
+    private Vector3 _sceneStartPosition;
     private Vector3 _targetPosition;
     private bool _isLeft = true;
     #endregion
@@ -42,15 +45,14 @@ public class PlayerView : MonoBehaviour, IPlayerView
     #region Unity LifeCycle
     private void Awake()
     {
-        _cinemachineFollow.FollowOffset = new Vector3(0, 5, -10);
+        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
         _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
     private void Start()
     {
-        _startPosition = transform.position;
-        _targetPosition = _startPosition;
+        _lobbyPosition = transform.position;
         _animator.runtimeAnimatorController = _animatorController;
     }
     private void Update()
@@ -66,20 +68,21 @@ public class PlayerView : MonoBehaviour, IPlayerView
     #endregion
 
     #region Methods
-    private IEnumerator MoveCoroutine(Vector3 targetPosition, float duration)
+    private IEnumerator StartGameAnimation(Vector3 targetPosition, float duration)
     {
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            _cinemachineFollow.FollowOffset = Vector3.Lerp(new Vector3(0, 5, -10), new Vector3(0, -4.5f, -10), t);
-            transform.position = Vector3.Lerp(_startPosition, targetPosition, t);
+            _cinemachineFollow.FollowOffset = Vector3.Lerp(new Vector3(0, 1.5f, -10), new Vector3(0, -4.5f, -10), t);
+            transform.position = Vector3.Lerp(_lobbyPosition, targetPosition, t);
             yield return null;
         }
         transform.position = targetPosition;
-        _startPosition = new Vector3(-0.15f, 1.07f, 0);
+        _sceneStartPosition = new Vector3(-0.15f, 1.07f, 0);
         _targetPosition = new Vector3(-0.15f, 1.07f, 0);
+        _animator.SetBool("isRunning", false);
         _canMove = true;
     }
     #endregion
@@ -112,17 +115,27 @@ public class PlayerView : MonoBehaviour, IPlayerView
         Debug.Log(msg);
     }
 
-    public void SetStartPosition()
+    public void SetRestartGame()
     {
         _isLeft = true;
-        _targetPosition = _startPosition;
-        transform.position = _startPosition;
+        _targetPosition = _sceneStartPosition;
+        transform.position = _sceneStartPosition;
         _spriteRenderer.flipX = !_isLeft;
+        _animator.SetBool("isDeath", false);
     }
-    [ContextMenu("StartButtonClick")]
-    public void OnStartButtonClick()
+    public void SetReturnLobby()
     {
-        StartCoroutine(MoveCoroutine(new Vector3(-0.15f, 1.07f, 0), 3f));
+        transform.position = _lobbyPosition;
+    }
+    public void SetStartGame()
+    {
+        _animator.SetBool("isRunning", true);
+        StartCoroutine(StartGameAnimation(new Vector3(-0.15f, 1.07f, 0), ConstVariable.startAnimationTime));
+    }
+
+    public void SetDeath()
+    {
+        _animator.SetBool("isDeath", true);
     }
     #endregion
 }

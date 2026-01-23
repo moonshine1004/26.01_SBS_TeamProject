@@ -9,4 +9,5 @@ namespace Game.Events
     public readonly struct OnTimeChange { }
     public readonly struct OnTimeOver { }
     public readonly struct OnButtonPressed { }
+    public readonly struct OnStartGame { }  
 }

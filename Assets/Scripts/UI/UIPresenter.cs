@@ -11,7 +11,7 @@ public interface IUIPresenter
     void OnUpdateTimerRequest();
 }
 
-public class UIPresenter : IUIPresenter, IEventBusAware
+public class UIPresenter : IUIPresenter
 {
     #region Constructor
     private UIModel _uiModel;
@@ -21,27 +21,21 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     {
         _uiModel = uiModel;
         _uiView = uiView;
-    }
-    #endregion
-    
-    private IEventBus _eventBus;
-
-    public void SetEventBus(IEventBus bus)
-    {
-        _eventBus = bus;
-        _eventBus.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
+        EventBus.Instance.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
         EventBus.Instance.Subscribe<OnTimeChange>(_ => OnUpdateTimerRequest());
     }
+    #endregion
+
 
     #region IUIPresenter Interface Implementation
     public void OnFlipRequest()
     {
-        _eventBus.Publish(new OnFlipPressed());
+        EventBus.Instance.Publish(new OnFlipPressed());
     }
 
     public void OnMoveRequest()
     {
-        _eventBus.Publish(new OnMovePressed());
+        EventBus.Instance.Publish(new OnMovePressed());
     }
     public void OnGameOverRequest()
     {
@@ -50,7 +44,7 @@ public class UIPresenter : IUIPresenter, IEventBusAware
     public void OnRestartRequest()
     {
         GameStageManager.Instance.RestartGame();
-        _eventBus.Publish(new OnRestartGame());
+        EventBus.Instance.Publish(new OnRestartGame());
         _uiView.ClearPopUp();
     }
     public void OnUpdateScoreRequest()

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1162719ec9188b34690522417301de0b, type: 3}
-  m_Name: Test
+  m_Name: Stage01
   m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
   stageID: 1
-  time: 5000
-  endLine: 4
+  time: 60
+  endLine: 9

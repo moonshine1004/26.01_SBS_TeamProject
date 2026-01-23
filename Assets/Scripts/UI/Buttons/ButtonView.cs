@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class ButtonView : MonoBehaviour
 {
-    private Image _buttonImage;
-    private Sprite _basicButton;
-    [SerializeField] private Sprite _pressedButton;
+    protected Image _buttonImage;
+    protected Sprite _basicButton;
+    [SerializeField] protected Sprite _pressedButton;
 
     private void Awake()
     {
@@ -14,7 +14,7 @@ public class ButtonView : MonoBehaviour
         _basicButton = _buttonImage.sprite;
     }
 
-    public void OnButtonPressed()
+    public virtual void OnButtonPressed()
     {
         StartCoroutine(ButtonAnimation());
     }

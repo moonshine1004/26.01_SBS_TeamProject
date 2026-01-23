@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 298533e5729b04f67aa2ab99c01d9736
+guid: 4259eda18018e42f5a1027968fd72a6d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4222970517005210636
-    second: Character_walk_01_0
+      213: 4210513296107207212
+    second: UI_Popup_TutorialMove_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character_walk_01_0
+      name: UI_Popup_TutorialMove_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 30
-        width: 264
-        height: 497
+        x: 0
+        y: 0
+        width: 1280
+        height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c041b0b9f410b9a30800000000000000
-      internalID: 4222970517005210636
+      spriteID: c2a7788d88fbe6a30800000000000000
+      internalID: 4210513296107207212
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Character_walk_01_0: 4222970517005210636
+      UI_Popup_TutorialMove_0: 4210513296107207212
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

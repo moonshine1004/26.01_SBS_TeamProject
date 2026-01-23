@@ -8,10 +8,6 @@ public interface IEventBus
     IDisposable Subscribe<T>(Action<T> handler);
     void Publish<T>(T evt);
 }
-public interface IEventBusAware
-{
-    void SetEventBus(IEventBus bus);
-}
 
 public class EventBus : MonoBehaviour, IEventBus
 {
