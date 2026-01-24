@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 public interface IUIView
 {
     void InitUIView(IUIPresenter uiPresenter);
-    void forDebug(string msg);
     void TogglePopUp(SceneState sceneState);
     void ClearPopUp();
     void UpdateScore();
@@ -24,7 +23,6 @@ public class UIView : MonoBehaviour, IUIView
     public void InitUIView(IUIPresenter uiPresenter)
     {
         _uiPresenter = uiPresenter;
-        EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGame());
     }
     
     #region References
@@ -39,8 +37,7 @@ public class UIView : MonoBehaviour, IUIView
      [SerializeField] private Canvas _characterSelect;
      [SerializeField] private Canvas _mapSelect;
     [SerializeField] private Text _tileScore;
-    [SerializeField] private Text _currentScore;
-    [SerializeField] private Text _highScore;
+
     [SerializeField] private Text _timer;
     [SerializeField] private GameObject _tutorials;
     #endregion
@@ -48,16 +45,16 @@ public class UIView : MonoBehaviour, IUIView
     #region Unity Lifecycle Methods
     private void Awake()
     {
-        _allCanvas[1] = _inGameUI;
-        _allCanvas[2] = _gameOverPopUp;
-        _allCanvas[3] = _gameClearPopUp;
-        _allCanvas[4] = _lobby;
-        _allCanvas[5] = _characterSelect;
-        _allCanvas[6] = _mapSelect;
+        _allCanvas[0] = _inGameUI;
+        _allCanvas[1] = _gameOverPopUp;
+        _allCanvas[2] = _gameClearPopUp;
+        _allCanvas[3] = _lobby;
+        _allCanvas[4] = _characterSelect;
+        _allCanvas[5] = _mapSelect;
     }
     #endregion
 
-    private void SetActiveAllCanvasFalse()
+    private void ClearAllCanvas()
     {
         for(int i =0; i < _allCanvas.Length; i++)
         {
@@ -66,17 +63,17 @@ public class UIView : MonoBehaviour, IUIView
     }
     public void OnReturnLobby()
     {
-        SetActiveAllCanvasFalse();
+        ClearAllCanvas();
         _lobby.gameObject.SetActive(true);
     }
     public void PopUpSelectCharacter()
     {
-        SetActiveAllCanvasFalse();
+        ClearAllCanvas();
         _characterSelect.gameObject.SetActive(true);
     }
     public void PopUpSelectMap()
     {
-        SetActiveAllCanvasFalse();
+        ClearAllCanvas();
         _mapSelect.gameObject.SetActive(true);
     }
 
@@ -85,13 +82,6 @@ public class UIView : MonoBehaviour, IUIView
         await Task.Delay((int)seconds * 1000); 
         _tutorials.SetActive(false);
     }
-
-
-    public void forDebug(string msg)
-    {
-        Debug.Log(msg);
-    }
-
 
     #region Methods for Test
     public void MoveTest(InputAction.CallbackContext context)
@@ -113,9 +103,14 @@ public class UIView : MonoBehaviour, IUIView
         {
             case SceneState.GameOver:
                 {
-                    _highScore.text = $"{ScoreManager.Instance.HighScore}";
-                    _currentScore.text = $"{ScoreManager.Instance.CurrentScore}";
                     _gameOverPopUp.gameObject.SetActive(true);
+                    break;
+                }
+            case SceneState.GameClear:
+                {
+                    ClearAllCanvas();
+                    _gameClearPopUp.gameObject.SetActive(true);
+                    _inGameUI.gameObject.SetActive(true);
                     break;
                 }
             default:
@@ -140,7 +135,8 @@ public class UIView : MonoBehaviour, IUIView
     }
     public void ClearPopUp()
     {
-        _gameOverPopUp.gameObject.SetActive(false);
+        ClearAllCanvas();
+        _inGameUI.gameObject.SetActive(true);
     }
     public void UpdateTimer()
     {
@@ -149,8 +145,9 @@ public class UIView : MonoBehaviour, IUIView
 
     public void OnStartGame()
     {
-        SetActiveAllCanvasFalse();
+        ClearAllCanvas();
         _tutorials.SetActive(true);
+        UpdateScore();
         _inGameUI.gameObject.SetActive(true);
         WaitSecond(ConstVariable.startAnimationTime);
     }

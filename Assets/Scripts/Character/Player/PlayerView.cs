@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,13 +7,14 @@ using UnityEngine.InputSystem;
 public interface IPlayerView
 {
     void InstallPlayerView(IPlayerPresenter playerPresenter, RuntimeAnimatorController animatorController);
-    void forDebug(string msg);
     void SetDiraction();
-    void SetPosition();
+    Task SetPosition();
     void SetStartGame();
+    Task SetClearGame();
     void SetRestartGame();
     void SetReturnLobby();
     void SetDeath();
+    void SetCameraFollowOff(bool isLeft);
 }
 
 public class PlayerView : MonoBehaviour, IPlayerView
@@ -23,13 +25,15 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private PlayerInput _playerInput;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
-    [SerializeField] private RuntimeAnimatorController _animatorController;
     [SerializeField] private CinemachineFollow _cinemachineFollow;
+    [SerializeField] private CinemachineCamera _cinemachineCamera;
     #endregion
     #region Fields
     private float _xMove = ConstVariable.xDistance;
     private float _yMove = ConstVariable.yDistance;
     private bool _canMove = false;
+    private bool _isMoving = false;
+    private TaskCompletionSource<bool> _moveTcs;
     private Vector3 _lobbyPosition;
     private Vector3 _sceneStartPosition;
     private Vector3 _targetPosition;
@@ -40,12 +44,12 @@ public class PlayerView : MonoBehaviour, IPlayerView
     public void InstallPlayerView(IPlayerPresenter playerPresenter, RuntimeAnimatorController animatorController)
     {
         _playerPresenter = playerPresenter;
-        _animatorController = animatorController;
+        _animator.runtimeAnimatorController = animatorController;
     }
     #region Unity LifeCycle
     private void Awake()
     {
-        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
+        
         _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -53,21 +57,36 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private void Start()
     {
         _lobbyPosition = transform.position;
-        _animator.runtimeAnimatorController = _animatorController;
+        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
     }
     private void Update()
     {
-        if (_canMove)
-        {
-            _canMove = false;
-            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 40f * Time.deltaTime);
-            _canMove = true;
-        }
-        
+        Move(); 
     }
     #endregion
 
     #region Methods
+    private void Move()
+    {
+        if(_isMoving == false) return;
+        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 40f * Time.deltaTime);
+        if (Vector3.SqrMagnitude(transform.position - _targetPosition) < 0.0001f)
+        {
+            transform.position = _targetPosition;
+            _moveTcs.TrySetResult(true);
+            _moveTcs = null;
+            _isMoving = false;
+        }
+    }
+    private IEnumerator MoveCameraToTarget(Vector3 targetPosition)
+    {
+        while (Vector3.Distance(_cinemachineCamera.transform.position, targetPosition) > 0.0001f)
+        {
+            _cinemachineCamera.transform.position = Vector3.MoveTowards(_cinemachineCamera.transform.position, targetPosition, 40f * Time.deltaTime);
+            yield return null;
+        }
+        _cinemachineCamera.transform.position = targetPosition;
+    }
     private IEnumerator StartGameAnimation(Vector3 targetPosition, float duration)
     {
         float elapsed = 0f;
@@ -85,6 +104,25 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _animator.SetBool("isRunning", false);
         _canMove = true;
     }
+    private IEnumerator GameClearAnimation()
+    {
+        if(_isLeft == false) SetDiraction();
+        _animator.SetBool("isRunning", true);
+        float distance = Vector3.Distance(transform.position, new Vector3(-10, transform.position.y, 0));
+        float elapsed = 0f;
+        float duration = distance/10f;
+        Vector3 startPos = transform.position;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            transform.position = Vector3.Lerp(startPos, new Vector3(-10, transform.position.y, 0), t);
+            yield return null;
+        }
+        transform.position = new Vector3(-10, transform.position.y, 0);
+        _moveTcs.TrySetResult(true);
+        _moveTcs = null;
+    }
     #endregion
 
     #region IPlayerView Interface Implemetation
@@ -93,26 +131,27 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _isLeft = !_isLeft;
         _spriteRenderer.flipX = !_isLeft;
     }
-    public void SetPosition()
+    public Task SetPosition()
     {
-        if(_canMove == false) return;
+        if(_canMove == false) return Task.FromCanceled(new System.Threading.CancellationToken(canceled: true));
+        if (_isMoving) return _moveTcs.Task ?? Task.CompletedTask;
         if(_isLeft)
         {
             _targetPosition = transform.position + new Vector3(-_xMove, -_yMove, 0);
+            _isMoving = true;
             _animator.SetTrigger("isMoving");
-            // this.gameObject.transform.position += new Vector3(-_xMove, -_yMove, 0);
+            _moveTcs = new TaskCompletionSource<bool>();
+            return _moveTcs.Task;
         } 
         else if(!_isLeft)
         {
             _targetPosition = transform.position + new Vector3(_xMove, -_yMove, 0);
+            _isMoving = true;
             _animator.SetTrigger("isMoving");
-            // this.gameObject.transform.position += new Vector3(_xMove, -_yMove, 0);
+            _moveTcs = new TaskCompletionSource<bool>();
+            return _moveTcs.Task;
         }
-    }
-
-    public void forDebug(string msg)
-    {
-        Debug.Log(msg);
+        return _moveTcs.Task;
     }
 
     public void SetRestartGame()
@@ -122,20 +161,46 @@ public class PlayerView : MonoBehaviour, IPlayerView
         transform.position = _sceneStartPosition;
         _spriteRenderer.flipX = !_isLeft;
         _animator.SetBool("isDeath", false);
+        _animator.SetBool("isRunning", false);
+        _cinemachineCamera.Follow = transform;
+        _cinemachineFollow.FollowOffset = new Vector3(0, -4.5f, -10);
     }
     public void SetReturnLobby()
     {
+        _animator.SetBool("isRunning", false);
+        _animator.SetBool("isDeath", false);
         transform.position = _lobbyPosition;
+        _cinemachineCamera.Follow = transform;
+        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
     }
     public void SetStartGame()
     {
         _animator.SetBool("isRunning", true);
         StartCoroutine(StartGameAnimation(new Vector3(-0.15f, 1.07f, 0), ConstVariable.startAnimationTime));
     }
-
     public void SetDeath()
     {
         _animator.SetBool("isDeath", true);
+    }
+    public void SetCameraFollowOff(bool isLeft)
+    {
+        _cinemachineCamera.Follow = null;
+        if(isLeft)
+        {
+            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(-_xMove,0, 0)));
+        }
+        else if(!isLeft)
+        {
+            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(_xMove,0, 0)));
+        }
+    }
+    public Task SetClearGame()
+    {
+        _cinemachineFollow.FollowOffset = new Vector3(0, 4.05f, -10);
+        _cinemachineCamera.Follow = transform;
+        _moveTcs = new TaskCompletionSource<bool>();
+        StartCoroutine(GameClearAnimation());
+        return _moveTcs.Task;
     }
     #endregion
 }

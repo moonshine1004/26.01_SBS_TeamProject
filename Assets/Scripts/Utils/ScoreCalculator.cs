@@ -9,7 +9,7 @@ public static class ScoreUtil
     /// <returns>최종 점수</returns>
     public static int CalculateClearScore(int tileScore, float remainingTime, float playerBonus)
     {
-        int score = (((int)remainingTime + tileScore) * (int)playerBonus) * 100;
-        return score;
+        float score = ((remainingTime + tileScore) * playerBonus) * 100;
+        return (int)score;
     }
 }

@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Player01
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
   id: 1
-  animatorController: {fileID: 9100000, guid: 50b0511c7a5534e2aaef871a5b93ce9e, type: 2}
+  bonusRate: 1
+  animatorController: {fileID: 22100000, guid: f77ea7d2868fb42c4a2afa0008c7f390, type: 2}

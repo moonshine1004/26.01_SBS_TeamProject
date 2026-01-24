@@ -17,39 +17,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private List<StageDataSO> _stageDatas = new List<StageDataSO>();
-    [SerializeField] private List<PlayerModelSO> _playerDatas = new List<PlayerModelSO>();
-
     [SerializeField] private PlayerInstaller _playerInstaller;
+    [SerializeField] private PlayerCatalogSO _playerCatalogSO;
+    [SerializeField] private StageCatalogSO _stageCatalogSO;
+    [SerializeField] private PlayerDataSO _currentPlayerData;
+    [SerializeField] private StageDataSO _currentStageData;
+    public PlayerDataSO CurrentPlayerData => _currentPlayerData;
+    public StageDataSO CurrentStageData => _currentStageData;
 
     #region Unity Lifecycle Methods
     private void Start()
     {
-        
+        SwitchStage(GamePrefsRepository.CurrentPlayMap);
+        SwitchPlayer(GamePrefsRepository.CurrentPlayPlayer);
     }
     #endregion
 
     public void SwitchStage(int stageID)
     {
-        foreach (StageDataSO stageData in _stageDatas)
-        {
-            if(stageData.stageID == stageID)
-            {
-                GameStageManager.Instance.UpdateSceneData(stageData);
-                return;
-            }
-        }
+        _currentStageData = _stageCatalogSO.GetStageDataByID(stageID);
+        GamePrefsRepository.CurrentPlayMap = stageID;
+        GameStageManager.Instance.UpdateSceneData(_currentStageData);
     }
     public void SwitchPlayer(int playerID)
     {
-        foreach (PlayerModelSO playerData in _playerDatas)
-        {
-            if(playerData.id == playerID)
-            {
-                _playerInstaller.SwitchPlayer(playerData);
-                return;
-            }
-        }
+        _currentPlayerData = _playerCatalogSO.GetPlayerDataByID(playerID);
+        GamePrefsRepository.CurrentPlayPlayer = playerID;
+        _playerInstaller.SwitchPlayer(_currentPlayerData);
     }
     public void Switch(ButtonType buttonType, int id)
     {
@@ -71,6 +65,14 @@ public class GameManager : MonoBehaviour
     public void OnStartButtonClick()
     {
         EventBus.Instance.Publish(new OnStartGame());
+    }
+    public void OnReturnLobbyButtonClick()
+    {
+        EventBus.Instance.Publish(new OnReturnLobby());
+    }
+    public void OnQuitButtonClick()
+    {
+        EventBus.Instance.Publish(new OnQuitGame());
     }
 
 }

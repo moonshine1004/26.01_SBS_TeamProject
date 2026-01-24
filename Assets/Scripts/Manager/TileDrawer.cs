@@ -28,6 +28,7 @@ public class TileDrawer : MonoBehaviour
     public Vector3 weight = new(); // 타일의 중심을 맞추기 위한 보정값
     private int _tilePoolIndex = 0;
     private int _tilePoolWeight = 0;
+    private int _createdTileCount = 20;
     private int _lastXPos;
     private int _lastYPos;
     #endregion
@@ -48,6 +49,7 @@ public class TileDrawer : MonoBehaviour
         min = new(0, -80);
         max = new(10, 0);
         _tilePoolIndex = 0;
+        _createdTileCount = 20;
         CreatTiles();
         DrawTiles();
     }
@@ -101,7 +103,10 @@ public class TileDrawer : MonoBehaviour
     {
         _tilePoolWeight++;
         if(_tilePoolWeight <7) return;
-        
+
+        if(_createdTileCount == 1 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor) return;
+        _createdTileCount++;
+
         if(_tilePoolIndex == TilePooling.Instance.PoolAmount)
         {
             _tilePoolIndex = 0;

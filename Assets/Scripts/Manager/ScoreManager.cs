@@ -17,29 +17,29 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    private IDisposable _updateScore; 
-
     #region Unity Lifecycle
     private void Awake()
     {
-        // 점수 불러오기 기능 추가 필요
-        _updateScore = EventBus.Instance.Subscribe<OnUpdateTileScore>(_ => AddTileScore());
+
     }
     #endregion
 
-    private int _tileScore;
+    private int _tileScore = 1;
     private int _currentScore;
-    private int _highScore;
 
     public int TileScore
     {
-        get => _tileScore;
+        get
+        {
+            return _tileScore;
+        }
+
     }
     public int CurrentScore
     {
         get
         {
-            _currentScore = _currentScore = ScoreUtil.CalculateClearScore(TileScore, GameStageManager.Instance.RemainingTime, 1);
+            _currentScore = _currentScore = ScoreUtil.CalculateClearScore(TileScore, GameStageManager.Instance.RemainingTime, GameManager.Instance.CurrentPlayerData.bonusRate);
             return _currentScore;
         }
     }
@@ -47,11 +47,11 @@ public class ScoreManager : MonoBehaviour
     {
         get
         {
-            if(CurrentScore > _highScore)
+            if(CurrentScore > GamePrefsRepository.CurrentHighScore)
             {
-                _highScore = CurrentScore;
+                GamePrefsRepository.CurrentHighScore = CurrentScore;
             }
-            return _highScore;
+            return GamePrefsRepository.CurrentHighScore;
         } 
     }
 
@@ -61,6 +61,6 @@ public class ScoreManager : MonoBehaviour
     }
     public void ResetTileScore()
     {
-        _tileScore = 0;
+        _tileScore = 1;
     }
 }

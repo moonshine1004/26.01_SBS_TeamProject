@@ -18,5 +18,7 @@ public class ConstVariable : MonoBehaviour
     public const float xDistance = 2.44f;
     public const float yDistance = 1.22f;
     
-    public const float startAnimationTime = 3f;
+    public const float startAnimationTime = 1f;
+
+    public const int tilesOnFloor = 20;
 }

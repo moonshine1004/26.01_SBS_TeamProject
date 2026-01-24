@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1162719ec9188b34690522417301de0b, type: 3}
   m_Name: Stage02
   m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
-  stageID: 2
+  id: 2
   time: 120
   endLine: 21

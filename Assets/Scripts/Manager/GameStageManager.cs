@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.Events;
+using UnityEngine.SocialPlatforms.Impl;
 
 public enum SceneState
 {
     Playing,
     GameOver,
+    GameClear,
     Paused
 }
 
@@ -45,13 +47,8 @@ public class GameStageManager : MonoBehaviour
     private void Awake()
     {   
         EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGame());
+        EventBus.Instance.Subscribe<OnRestartGame>(_ => RestartGame());
     }   
-    private void OnStartGame()
-    {
-        TileDrawer.Instance.OnStart();
-        DrawSatge();
-        StartTimer(_stageData.time);
-    }
     private void Update()
     {
         UpdateTimer();
@@ -68,16 +65,15 @@ public class GameStageManager : MonoBehaviour
 
     private void DrawSatge()
     {
-        //12.75
         Vector3 lastPos = new Vector3(17, 0, 0) + _weight;
-        for(int i = 0; i < _stageData.endLine; i++)
+        for(int i = 0; i < _stageData.endLine - 1; i++)
         {
             var middle = Instantiate(_stagePrefabs[Random.Range(0, _stagePrefabs.Count -1)]);
             middle.transform.position = lastPos;
             lastPos -= new Vector3(0, middle.GetComponent<Renderer>().bounds.size.y,0);
         }
         var bottom = Instantiate(_stagePrefabs[_stagePrefabs.Count-1]);
-        bottom.transform.position = lastPos;
+        bottom.transform.position = lastPos + new Vector3(0.25f, -1.92f, 0);
     }
     private void StartTimer(float time)
     {
@@ -97,18 +93,49 @@ public class GameStageManager : MonoBehaviour
         _remainingTime -= Time.deltaTime;
         EventBus.Instance.Publish(new OnTimeChange());
     }
+    private void OnStartGame()
+    {
+        TileDrawer.Instance.OnStart();
+        DrawSatge();
+        StartTimer(_stageData.time);
+        ScoreManager.Instance.ResetTileScore();
+    }
+    public void SceneStateChange(SceneState sceneState)
+    {
+        switch (sceneState)
+        {
+            case SceneState.GameOver:
+                GameOver();
+                break;
+            case SceneState.GameClear:
+                GameClear();
+                break;
+            case SceneState.Paused:
+                Time.timeScale = 0f;
+                break;
+            default:
+                break;
+        }
+    }
     public void GameOver()
     {
         if (_sceneState == SceneState.GameOver) return;
         _sceneState = SceneState.GameOver;
         Time.timeScale = 0f;
         
-        _uiPresenter.OnGameOverRequest();
+        EventBus.Instance.Publish(new OnGameOver());
 
+    }
+    public void GameClear()
+    {
+        if (_sceneState == SceneState.GameClear) return;
+        _sceneState = SceneState.GameClear;
+        Time.timeScale = 0f;
+
+        EventBus.Instance.Publish(new OnGameClear());
     }
     public void RestartGame()
     {
-        if (_sceneState != SceneState.GameOver) return;
         ScoreManager.Instance.ResetTileScore();
         _uiPresenter.OnUpdateScoreRequest();
         StartTimer(_stageData.time);
@@ -119,7 +146,6 @@ public class GameStageManager : MonoBehaviour
     public void UpdateSceneData(StageDataSO stageData)
     {
         _stageData = stageData;
-        Debug.Log($"Stage Data Updated : StageID {stageData.stageID}");
     }
     
 

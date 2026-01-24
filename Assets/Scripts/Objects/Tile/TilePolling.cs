@@ -18,7 +18,7 @@ public class TilePooling : MonoBehaviour
     [SerializeField] private GameObject _tilePrefab;
     private List<GameObject> _pooledTile = new List<GameObject>();
 
-    private int poolAmount = 30;
+    private int poolAmount = 20;
     public int PoolAmount
     {
         get => poolAmount;

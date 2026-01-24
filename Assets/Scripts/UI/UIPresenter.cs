@@ -5,7 +5,9 @@ public interface IUIPresenter
 {
     void OnMoveRequest();
     void OnFlipRequest();
+    void OnStartGameRequest();
     void OnGameOverRequest();
+    void OnGameClear();
     void OnRestartRequest();
     void OnUpdateScoreRequest();
     void OnUpdateTimerRequest();
@@ -23,6 +25,9 @@ public class UIPresenter : IUIPresenter
         _uiView = uiView;
         EventBus.Instance.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
         EventBus.Instance.Subscribe<OnTimeChange>(_ => OnUpdateTimerRequest());
+        EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGameRequest());
+        EventBus.Instance.Subscribe<OnGameClear>(_ => OnGameClear());
+        EventBus.Instance.Subscribe<OnGameOver>(_ => OnGameOverRequest());
     }
     #endregion
 
@@ -32,18 +37,24 @@ public class UIPresenter : IUIPresenter
     {
         EventBus.Instance.Publish(new OnFlipPressed());
     }
-
     public void OnMoveRequest()
     {
         EventBus.Instance.Publish(new OnMovePressed());
+    }
+    public void OnStartGameRequest()
+    {
+        _uiView.OnStartGame();
     }
     public void OnGameOverRequest()
     {
         _uiView.TogglePopUp(SceneState.GameOver);
     }
+    public void OnGameClear()
+    {
+        _uiView.TogglePopUp(SceneState.GameClear);
+    }
     public void OnRestartRequest()
     {
-        GameStageManager.Instance.RestartGame();
         EventBus.Instance.Publish(new OnRestartGame());
         _uiView.ClearPopUp();
     }
@@ -57,7 +68,7 @@ public class UIPresenter : IUIPresenter
     }
     #endregion
 
-    
 
-    
+
+
 }

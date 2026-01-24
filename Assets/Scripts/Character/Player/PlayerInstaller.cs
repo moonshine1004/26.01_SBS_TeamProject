@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerInstaller : MonoBehaviour
 {
     [SerializeField] private IPlayerView _playerView;
-    [SerializeField] private PlayerModelSO _playerStat;
+    [SerializeField] private PlayerDataSO _defaultPlayerData;
     private PlayerModel _playerModel;
     private IPlayerPresenter _playerPresenter;
 
@@ -11,18 +11,16 @@ public class PlayerInstaller : MonoBehaviour
     public void Awake()
     {
         _playerView = GetComponent<IPlayerView>();
-        _playerModel = InitPlayerModel(_playerStat);
         _playerPresenter = new PlayerPresenter(_playerModel, _playerView); 
-        _playerView.InstallPlayerView(_playerPresenter, _playerStat.animatorController);
     }
     #endregion
 
-    public void SwitchPlayer(PlayerModelSO playerModelSO)
+    public void SwitchPlayer(PlayerDataSO playerModelSO)
     {
+        _playerModel = InitPlayerModel(playerModelSO);
         _playerView.InstallPlayerView(_playerPresenter, playerModelSO.animatorController);
-        Debug.Log("Player Switched to ID: " + playerModelSO.id);
     }
-    private PlayerModel InitPlayerModel(PlayerModelSO playerStat)
+    private PlayerModel InitPlayerModel(PlayerDataSO playerStat)
     {
         return new PlayerModel();
     }

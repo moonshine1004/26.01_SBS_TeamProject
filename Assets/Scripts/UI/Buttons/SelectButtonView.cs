@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using Game.Events;
 
 public enum ButtonType
 {
@@ -15,14 +15,43 @@ public class SelectButtonView : ButtonView
     
     private void OnEnable()
     {
-        if(_isPressed)
+        switch (_buttonType)
         {
-            OnButtonPressed();
+            case ButtonType.PlayerSelect:
+                EventBus.Instance.Subscribe<OnPlayerSelectButtonPressed>(_ => ResetButtonImage());
+                if (GamePrefsRepository.CurrentPlayPlayer == _id)
+                {
+                    _isPressed = true;
+                    _buttonImage.sprite = _pressedButton;
+                }
+                break;
+            case ButtonType.StageSelect:
+                EventBus.Instance.Subscribe<OnStageSelectButtonPressed>(_ => ResetButtonImage());
+                if (GamePrefsRepository.CurrentPlayMap == _id)
+                {
+                    _isPressed = true;
+                    _buttonImage.sprite = _pressedButton;
+                }
+                break;
+            default:
+                ResetButtonImage();
+                break;
         }
     }
 
     public override void OnButtonPressed()
     {
+        if (_isPressed) return;
+
+        switch (_buttonType)
+        {
+            case ButtonType.PlayerSelect:
+                EventBus.Instance.Publish(new OnPlayerSelectButtonPressed());
+                break;
+            case ButtonType.StageSelect:
+                EventBus.Instance.Publish(new OnStageSelectButtonPressed());
+                break;
+        }
         _isPressed = true;
         GameManager.Instance.Switch(_buttonType, _id);
         _buttonImage.sprite = _pressedButton;
