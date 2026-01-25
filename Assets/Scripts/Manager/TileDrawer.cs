@@ -39,7 +39,14 @@ public class TileDrawer : MonoBehaviour
 
     public void OnStart()
     {
+        _tileGrid.Clear();
+        Clear();
         startPosition = transform.position; // 씬 상의 실제 위치
+        min = new(0, -80);
+        max = new(10, 0);
+        _tilePoolIndex = 0;
+        _createdTileCount = 20;
+        _tilePoolWeight = 0;
         CreatTiles();
         DrawTiles();
     }
@@ -50,6 +57,7 @@ public class TileDrawer : MonoBehaviour
         max = new(10, 0);
         _tilePoolIndex = 0;
         _createdTileCount = 20;
+        _tilePoolWeight = 0;
         CreatTiles();
         DrawTiles();
     }
@@ -133,6 +141,9 @@ public class TileDrawer : MonoBehaviour
 
     private void Clear()
     {
-        
+        for (int i = 0; i < TilePooling.Instance.PoolAmount; i++)
+        {
+            TilePooling.Instance.ReturnTiles(i);
+        }
     }
 }

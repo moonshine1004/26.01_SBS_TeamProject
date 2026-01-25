@@ -53,7 +53,7 @@ public class UIView : MonoBehaviour, IUIView
         _allCanvas[5] = _mapSelect;
     }
     #endregion
-
+    #region Domain Methods
     private void ClearAllCanvas()
     {
         for(int i =0; i < _allCanvas.Length; i++)
@@ -61,9 +61,11 @@ public class UIView : MonoBehaviour, IUIView
             _allCanvas[i].gameObject.SetActive(false);
         }
     }
+    #endregion
     public void OnReturnLobby()
     {
         ClearAllCanvas();
+        _uiPresenter.OnReturnLobbyRequest();
         _lobby.gameObject.SetActive(true);
     }
     public void PopUpSelectCharacter()

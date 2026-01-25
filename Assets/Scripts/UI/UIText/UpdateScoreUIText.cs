@@ -1,15 +1,9 @@
 using UnityEngine;
 
-public enum TextType
-{
-    HighScore,
-    CurrentScore
-}
-
-public class UpdateScoreText : MonoBehaviour
+public class UpdateScoreUIText : MonoBehaviour
 {
     [SerializeField] private TextType _textType;
-    private void OnEnable()
+    private void Update()
     {
         var text = GetComponent<UnityEngine.UI.Text>();
         switch (_textType)

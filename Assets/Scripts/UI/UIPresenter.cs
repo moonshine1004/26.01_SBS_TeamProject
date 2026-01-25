@@ -9,6 +9,7 @@ public interface IUIPresenter
     void OnGameOverRequest();
     void OnGameClear();
     void OnRestartRequest();
+    void OnReturnLobbyRequest();
     void OnUpdateScoreRequest();
     void OnUpdateTimerRequest();
 }
@@ -65,6 +66,11 @@ public class UIPresenter : IUIPresenter
     public void OnUpdateTimerRequest()
     {
         _uiView.UpdateTimer();
+    }
+
+    public void OnReturnLobbyRequest()
+    {
+        EventBus.Instance.Publish(new OnReturnLobby());
     }
     #endregion
 

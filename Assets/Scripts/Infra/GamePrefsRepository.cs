@@ -20,10 +20,34 @@ public static class GamePrefsRepository
     }
     public static int CurrentHighScore
     {
-        get => UnityEngine.PlayerPrefs.GetInt("CurrentHighScore", 0);
+        get
+        {
+            switch (CurrentPlayMap)
+            {
+                case 1:
+                    return UnityEngine.PlayerPrefs.GetInt("Map1HighScore", 0);
+                case 2:
+                    return UnityEngine.PlayerPrefs.GetInt("Map2HighScore", 0);
+                case 3:
+                    return UnityEngine.PlayerPrefs.GetInt("Map3HighScore", 0);
+                default:
+                    return 0;
+            }
+        }
         set
         {
-            UnityEngine.PlayerPrefs.SetInt("CurrentHighScore", value);
+            switch (CurrentPlayMap)
+            {
+                case 1:
+                    UnityEngine.PlayerPrefs.SetInt("Map1HighScore", value);
+                    break;
+                case 2:
+                    UnityEngine.PlayerPrefs.SetInt("Map2HighScore", value);
+                    break;
+                case 3:
+                    UnityEngine.PlayerPrefs.SetInt("Map3HighScore", value);
+                    break;
+            }
             UnityEngine.PlayerPrefs.Save();
         }
     }

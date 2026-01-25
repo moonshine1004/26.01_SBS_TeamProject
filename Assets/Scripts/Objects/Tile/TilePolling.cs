@@ -45,7 +45,7 @@ public class TilePooling : MonoBehaviour
         tile.TryGetComponent<ITileView>(out var tileView);
         return tileView;
     }
-    public void ReleaseTiles(GameObject tile)
+    private void ReleaseTiles(GameObject tile)
     {
         tile.SetActive(false);
     }

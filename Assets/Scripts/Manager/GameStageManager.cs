@@ -10,6 +10,11 @@ public enum SceneState
     GameClear,
     Paused
 }
+public interface IGameStageManager
+{
+    void OnUpdateSceneData(StageDataSO stageData);
+    void OnSceneStateChange(SceneState sceneState);
+}
 
 public class GameStageManager : MonoBehaviour
 {
@@ -46,8 +51,9 @@ public class GameStageManager : MonoBehaviour
     #region Unity Lifecycle
     private void Awake()
     {   
-        EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGame());
+        EventBus.Instance.Subscribe<OnStartGame>(_ => SetStartGame());
         EventBus.Instance.Subscribe<OnRestartGame>(_ => RestartGame());
+        EventBus.Instance.Subscribe<OnReturnLobby>(_ => SetReturnLobby());
     }   
     private void Update()
     {
@@ -58,11 +64,8 @@ public class GameStageManager : MonoBehaviour
     {
         _uiPresenter = uiPresenter;
     }
-    public void InitStageData()
-    {
-        
-    }
 
+    #region Game Stage Utils
     private void DrawSatge()
     {
         Vector3 lastPos = new Vector3(17, 0, 0) + _weight;
@@ -86,29 +89,29 @@ public class GameStageManager : MonoBehaviour
         if(_isTimerRunning == false) return;
         if(_remainingTime <= 0)
         {
-            GameOver();
+            SetGameOver();
             _isTimerRunning = false;
             return;
         }
         _remainingTime -= Time.deltaTime;
         EventBus.Instance.Publish(new OnTimeChange());
     }
-    private void OnStartGame()
+    #endregion
+
+
+    public void UpdateSceneData(StageDataSO stageData)
     {
-        TileDrawer.Instance.OnStart();
-        DrawSatge();
-        StartTimer(_stageData.time);
-        ScoreManager.Instance.ResetTileScore();
+        SetSceneData(stageData);
     }
-    public void SceneStateChange(SceneState sceneState)
+    public void OnSceneStateChange(SceneState sceneState)
     {
         switch (sceneState)
         {
             case SceneState.GameOver:
-                GameOver();
+                SetGameOver();
                 break;
             case SceneState.GameClear:
-                GameClear();
+                SetGameClear();
                 break;
             case SceneState.Paused:
                 Time.timeScale = 0f;
@@ -117,16 +120,28 @@ public class GameStageManager : MonoBehaviour
                 break;
         }
     }
-    public void GameOver()
+    #region Game Stage Stage Methods
+    private void SetSceneData(StageDataSO stageData)
+    {
+        _stageData = stageData;
+    }
+    private void SetStartGame()
+    {
+        _sceneState = SceneState.Playing;
+        TileDrawer.Instance.OnStart();
+        DrawSatge();
+        StartTimer(_stageData.time);
+        ScoreManager.Instance.ResetTileScore();
+    }
+    private void SetGameOver()
     {
         if (_sceneState == SceneState.GameOver) return;
         _sceneState = SceneState.GameOver;
         Time.timeScale = 0f;
         
         EventBus.Instance.Publish(new OnGameOver());
-
     }
-    public void GameClear()
+    private void SetGameClear()
     {
         if (_sceneState == SceneState.GameClear) return;
         _sceneState = SceneState.GameClear;
@@ -134,19 +149,22 @@ public class GameStageManager : MonoBehaviour
 
         EventBus.Instance.Publish(new OnGameClear());
     }
-    public void RestartGame()
+    private void RestartGame()
     {
         ScoreManager.Instance.ResetTileScore();
         _uiPresenter.OnUpdateScoreRequest();
         StartTimer(_stageData.time);
         Time.timeScale = 1f;
-        TileDrawer.Instance.OnRestart();
+        TileDrawer.Instance.OnStart();
         _sceneState = SceneState.Playing;
     }
-    public void UpdateSceneData(StageDataSO stageData)
+    private void SetReturnLobby()
     {
-        _stageData = stageData;
+        Time.timeScale = 1f;
+        _sceneState = SceneState.Playing;
+
     }
+    #endregion
     
 
 }

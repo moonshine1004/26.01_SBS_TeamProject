@@ -22,7 +22,6 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private IPlayerPresenter _playerPresenter;
     
     #region Components
-    private PlayerInput _playerInput;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     [SerializeField] private CinemachineFollow _cinemachineFollow;
@@ -49,8 +48,6 @@ public class PlayerView : MonoBehaviour, IPlayerView
     #region Unity LifeCycle
     private void Awake()
     {
-        
-        _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -89,6 +86,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     private IEnumerator StartGameAnimation(Vector3 targetPosition, float duration)
     {
+        new WaitForSeconds(1f);
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -122,6 +120,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         transform.position = new Vector3(-10, transform.position.y, 0);
         _moveTcs.TrySetResult(true);
         _moveTcs = null;
+        _canMove = true;
     }
     #endregion
 
@@ -169,6 +168,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     {
         _animator.SetBool("isRunning", false);
         _animator.SetBool("isDeath", false);
+        if(_isLeft == false) SetDiraction();
         transform.position = _lobbyPosition;
         _cinemachineCamera.Follow = transform;
         _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
@@ -184,6 +184,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     public void SetCameraFollowOff(bool isLeft)
     {
+        if(_canMove == false) return;
         _cinemachineCamera.Follow = null;
         if(isLeft)
         {
@@ -196,6 +197,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     public Task SetClearGame()
     {
+        _canMove = false;
         _cinemachineFollow.FollowOffset = new Vector3(0, 4.05f, -10);
         _cinemachineCamera.Follow = transform;
         _moveTcs = new TaskCompletionSource<bool>();

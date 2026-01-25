@@ -57,18 +57,21 @@ public class PlayerPresenter : IPlayerPresenter
     }
     public async void CheckTile(Vector2 position)
     {
+        _canMove = false;
         if (!TileDrawer.Instance.CheckTile(position))
         {
             _playerView.SetDeath();
-            GameStageManager.Instance.SceneStateChange(SceneState.GameOver);
+            GameStageManager.Instance.OnSceneStateChange(SceneState.GameOver);
+            return;
         }
-        if(ScoreManager.Instance.TileScore == 1 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor)
+        if(ScoreManager.Instance.TileScore == 1 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor) // Clear Condition
         {
             await Task.Delay(200);
             await _playerView.SetClearGame();
-            GameStageManager.Instance.SceneStateChange(SceneState.GameClear);
+            GameStageManager.Instance.OnSceneStateChange(SceneState.GameClear);
+            return;
         }
-
+        _canMove = true;
     }
 
     public async void WaitSecond(float seconds)
@@ -85,7 +88,7 @@ public class PlayerPresenter : IPlayerPresenter
             _position += new Vector2(-1, -1);
         else
             _position += new Vector2(1, -1);
-        if(ScoreManager.Instance.TileScore >= - 6 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor)
+        if(ScoreManager.Instance.TileScore >= - 6 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor) // Before Clear Condition
         {
             _playerView.SetCameraFollowOff(_isLeft);
         }
@@ -114,6 +117,7 @@ public class PlayerPresenter : IPlayerPresenter
     {
         _position = _startPosition;
         _isLeft = true;
+        _canMove = true;
         _playerView.SetRestartGame();
     }
     public void OnReturnLobby()

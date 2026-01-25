@@ -33,6 +33,16 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region Test Methods
+    [ContextMenu("Clear PlayerPrefs")]
+    private void ClearPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+
+    #endregion
+
+    #region Public Methods
     public void SwitchStage(int stageID)
     {
         _currentStageData = _stageCatalogSO.GetStageDataByID(stageID);
@@ -66,13 +76,10 @@ public class GameManager : MonoBehaviour
     {
         EventBus.Instance.Publish(new OnStartGame());
     }
-    public void OnReturnLobbyButtonClick()
-    {
-        EventBus.Instance.Publish(new OnReturnLobby());
-    }
     public void OnQuitButtonClick()
     {
         EventBus.Instance.Publish(new OnQuitGame());
     }
+    #endregion
 
 }
