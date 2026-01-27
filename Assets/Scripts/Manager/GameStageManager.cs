@@ -68,6 +68,7 @@ public class GameStageManager : MonoBehaviour
     #region Game Stage Utils
     private void DrawSatge()
     {
+        ClearStage();
         Vector3 lastPos = new Vector3(17, 0, 0) + _weight;
         for(int i = 0; i < _stageData.endLine - 1; i++)
         {
@@ -77,6 +78,14 @@ public class GameStageManager : MonoBehaviour
         }
         var bottom = Instantiate(_stagePrefabs[_stagePrefabs.Count-1]);
         bottom.transform.position = lastPos + new Vector3(0.25f, -1.92f, 0);
+    }
+    private void ClearStage()
+    {
+        var stages = GameObject.FindGameObjectsWithTag("Stage");
+        foreach(var stage in stages)
+        {
+            Destroy(stage);
+        }
     }
     private void StartTimer(float time)
     {

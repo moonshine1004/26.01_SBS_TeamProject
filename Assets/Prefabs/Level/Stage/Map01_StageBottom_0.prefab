@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7335523510123867616}
   m_Layer: 0
   m_Name: Map01_StageBottom_0
-  m_TagString: Untagged
+  m_TagString: Stage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageDataSO
   id: 1
   time: 1000
-  endLine: 1
+  endLine: 2
