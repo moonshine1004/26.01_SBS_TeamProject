@@ -80,7 +80,7 @@ public class GameStageManager : MonoBehaviour
     }
     private void StartTimer(float time)
     {
-        _remainingTime = Mathf.Max(0, time);
+        _remainingTime = Mathf.Max(0, time + ConstVariable.startAnimationTime);
         EventBus.Instance.Publish(new OnTimeChange());
         _isTimerRunning = true;
     }
@@ -145,6 +145,7 @@ public class GameStageManager : MonoBehaviour
     {
         if (_sceneState == SceneState.GameClear) return;
         _sceneState = SceneState.GameClear;
+        _isTimerRunning = false;
         Time.timeScale = 0f;
 
         EventBus.Instance.Publish(new OnGameClear());
@@ -162,6 +163,7 @@ public class GameStageManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         _sceneState = SceneState.Playing;
+        _isTimerRunning = false;
 
     }
     #endregion

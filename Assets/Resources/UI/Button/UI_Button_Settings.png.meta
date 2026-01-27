@@ -1,49 +1,10 @@
 fileFormatVersion: 2
-guid: 9753741440c7241bba2ad06f87dcf7bc
+guid: 94a417dd52d814dabbb596134ebb1c98
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7418224005368474524
-    second: Character2_walk_05_0
-  - first:
-      213: 5580739045042885340
-    second: Character2_walk_05_1
-  - first:
-      213: -8014370352812799119
-    second: Character2_walk_05_2
-  - first:
-      213: -3634236078113976933
-    second: Character2_walk_05_3
-  - first:
-      213: -6143898709870789321
-    second: Character2_walk_05_4
-  - first:
-      213: -1350596232317691055
-    second: Character2_walk_05_5
-  - first:
-      213: 4965423780408016091
-    second: Character2_walk_05_6
-  - first:
-      213: 410014640726582401
-    second: Character2_walk_05_7
-  - first:
-      213: -3425146735414237934
-    second: Character2_walk_05_8
-  - first:
-      213: 7426887898306883847
-    second: Character2_walk_05_9
-  - first:
-      213: 1195262492540206843
-    second: Character2_walk_05_10
-  - first:
-      213: -4361747189112180490
-    second: Character2_walk_05_11
-  - first:
-      213: 8087128025736478316
-    second: Character2_walk_05_12
-  - first:
-      213: -973037303272139050
-    second: Character2_walk_05_13
+      213: 9046343561578572363
+    second: UI_Button_Settings_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -76,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -165,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character2_walk_05_3
+      name: UI_Button_Settings_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 560
-        height: 556
+        x: 109
+        y: 109
+        width: 422
+        height: 402
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ec75572885b254f72977cd1524be3416
-      internalID: -3634236078113976933
+      spriteID: b4a68082a811b8d70800000000000000
+      internalID: 9046343561578572363
       vertices: []
       indices: 
       edges: []
@@ -190,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5dc48e0f07ae242eb8f970fb61768ca9
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -198,22 +159,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Character2_walk_05_0: 7418224005368474524
-      Character2_walk_05_1: 5580739045042885340
-      Character2_walk_05_10: 1195262492540206843
-      Character2_walk_05_11: -4361747189112180490
-      Character2_walk_05_2: -8014370352812799119
-      Character2_walk_05_3: -3634236078113976933
-      Character2_walk_05_4: -6143898709870789321
-      Character2_walk_05_5: -1350596232317691055
-      Character2_walk_05_6: 4965423780408016091
-      Character2_walk_05_7: 410014640726582401
-      Character2_walk_05_8: -3425146735414237934
-      Character2_walk_05_9: 7426887898306883847
+      UI_Button_Settings_0: 9046343561578572363
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

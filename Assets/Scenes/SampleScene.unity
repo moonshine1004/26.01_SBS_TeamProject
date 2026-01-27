@@ -1327,7 +1327,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2632, y: 346}
+  m_AnchoredPosition: {x: 2632, y: 286}
   m_SizeDelta: {x: 210, y: 323}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &378339855
@@ -1429,6 +1429,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 378339854}
+  - {fileID: 499134906}
   m_Father: {fileID: 688939365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1753,6 +1754,97 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 497730096}
+  m_CullTransparentMesh: 1
+--- !u!1 &499134905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 499134906}
+  - component: {fileID: 499134909}
+  - component: {fileID: 499134908}
+  - component: {fileID: 499134907}
+  m_Layer: 0
+  m_Name: StartButtonHighlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &499134906
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499134905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 389871870}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2680, y: 512}
+  m_SizeDelta: {x: 640, y: 212}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &499134907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499134905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6123e50a4aba8453592b8d9c93f90f45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonHighlightView
+  _basicButtonSprite: {fileID: 0}
+  _highlightButtonSprite: {fileID: -2150542254253342070, guid: 6f07f74b4b996474cb2058a58e1a4c27, type: 3}
+  _interval: 0.5
+--- !u!114 &499134908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499134905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -5142012139603231118, guid: ba28ca930b4da4eeaa6fee742928f693, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &499134909
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499134905}
   m_CullTransparentMesh: 1
 --- !u!1 &519420028
 GameObject:
@@ -5210,7 +5302,7 @@ MonoBehaviour:
   - {fileID: 2946519526068794133, guid: 09287334319ee400cb231ab338f54cdf, type: 3}
   - {fileID: 5557743000835402976, guid: 9744b105b667843ffb84361cba6822e9, type: 3}
   - {fileID: 6658144071589509508, guid: 27e6621568ee64a92956d6c781c268ad, type: 3}
-  _weight: {x: 0, y: -12.75, z: 0}
+  _weight: {x: 0, y: -17.91, z: 0}
   _stageData: {fileID: 11400000, guid: 59c9219764e4f49278f0107e244b4cf5, type: 2}
   _remainingTime: 0
 --- !u!114 &1641436471

@@ -135,9 +135,9 @@ TextureImporter:
       name: Character2_walk_02_1
       rect:
         serializedVersion: 2
-        x: 7
+        x: 3
         y: 0
-        width: 294
+        width: 298
         height: 564
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
