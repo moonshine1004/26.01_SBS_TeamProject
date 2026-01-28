@@ -13,7 +13,7 @@ public interface IPlayerView
     Task SetClearGame();
     void SetRestartGame();
     void SetReturnLobby();
-    void SetDeath();
+    Task SetDeath();
     void SetCameraFollowOff(bool isLeft);
 }
 
@@ -54,7 +54,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private void Start()
     {
         _lobbyPosition = transform.position;
-        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
+        _cinemachineFollow.FollowOffset = new Vector3(0, 1.7f, -10);
     }
     private void Update()
     {
@@ -92,7 +92,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            _cinemachineFollow.FollowOffset = Vector3.Lerp(new Vector3(0, 1.5f, -10), new Vector3(0, -4.5f, -10), t);
+            _cinemachineFollow.FollowOffset = Vector3.Lerp(new Vector3(0, 1.7f, -10), new Vector3(0, -4.5f, -10), t);
             transform.position = Vector3.Lerp(_lobbyPosition, targetPosition, t);
             yield return null;
         }
@@ -119,6 +119,25 @@ public class PlayerView : MonoBehaviour, IPlayerView
         }
         transform.position = new Vector3(-10, transform.position.y, 0);
         _moveTcs.TrySetResult(true);
+        _moveTcs = null;
+        _canMove = true;
+    }
+    private async Task DeathAnimation()
+    {
+        _animator.SetBool("isDeath", true);
+        _cinemachineCamera.Follow = null;
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + Vector3.down * 15f;
+        float distance = Vector3.Distance(startPos, targetPos);
+        float duration = distance / 10f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+            await Task.Yield();
+        }
         _moveTcs = null;
         _canMove = true;
     }
@@ -171,15 +190,16 @@ public class PlayerView : MonoBehaviour, IPlayerView
         if(_isLeft == false) SetDiraction();
         transform.position = _lobbyPosition;
         _cinemachineCamera.Follow = transform;
-        _cinemachineFollow.FollowOffset = new Vector3(0, 1.5f, -10);
+        _cinemachineFollow.FollowOffset = new Vector3(0, 1.7f, -10);
     }
     public void SetStartGame()
     {
         _animator.SetBool("isRunning", true);
         StartCoroutine(StartGameAnimation(new Vector3(-0.15f, 1.07f, 0), ConstVariable.startAnimationTime));
     }
-    public void SetDeath()
+    public async Task SetDeath()
     {
+        await DeathAnimation();
         _animator.SetBool("isDeath", true);
     }
     public void SetCameraFollowOff(bool isLeft)

@@ -60,7 +60,7 @@ public class PlayerPresenter : IPlayerPresenter
         _canMove = false;
         if (!TileDrawer.Instance.CheckTile(position))
         {
-            _playerView.SetDeath();
+            await _playerView.SetDeath();
             GameStageManager.Instance.OnSceneStateChange(SceneState.GameOver);
             return;
         }

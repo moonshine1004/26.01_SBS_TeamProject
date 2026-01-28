@@ -51,4 +51,22 @@ public static class GamePrefsRepository
             UnityEngine.PlayerPrefs.Save();
         }
     }
+    public static float BgmVolume
+    {
+        get => UnityEngine.PlayerPrefs.GetFloat("BgmVolume", 1f);
+        set
+        {
+            UnityEngine.PlayerPrefs.SetFloat("BgmVolume", value);
+            UnityEngine.PlayerPrefs.Save();
+        }
+    }
+    public static float SfxVolume
+    {
+        get => UnityEngine.PlayerPrefs.GetFloat("SfxVolume", 1f);
+        set
+        {
+            UnityEngine.PlayerPrefs.SetFloat("SfxVolume", value);
+            UnityEngine.PlayerPrefs.Save();
+        }
+    }
 }

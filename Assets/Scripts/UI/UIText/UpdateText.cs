@@ -1,9 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public enum TextType
 {
     HighScore,
-    CurrentScore
+    CurrentScore,
+    TileScore,
+    Timer
 }
 
 public class UpdateScoreText : MonoBehaviour
@@ -11,7 +14,7 @@ public class UpdateScoreText : MonoBehaviour
     [SerializeField] private TextType _textType;
     private void OnEnable()
     {
-        var text = GetComponent<UnityEngine.UI.Text>();
+        var text = GetComponent<TextMeshProUGUI>();
         switch (_textType)
         {
             case TextType.CurrentScore:
@@ -19,6 +22,12 @@ public class UpdateScoreText : MonoBehaviour
                 break;
             case TextType.HighScore:
                 text.text = $"{ScoreManager.Instance.HighScore}";
+                break;
+            case TextType.TileScore:
+                break;
+            case TextType.Timer:
+                break;
+            default:
                 break;
         }
     }

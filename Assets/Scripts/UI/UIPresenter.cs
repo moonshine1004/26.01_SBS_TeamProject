@@ -10,8 +10,6 @@ public interface IUIPresenter
     void OnGameClear();
     void OnRestartRequest();
     void OnReturnLobbyRequest();
-    void OnUpdateScoreRequest();
-    void OnUpdateTimerRequest();
 }
 
 public class UIPresenter : IUIPresenter
@@ -24,8 +22,6 @@ public class UIPresenter : IUIPresenter
     {
         _uiModel = uiModel;
         _uiView = uiView;
-        EventBus.Instance.Subscribe<OnUpdateTileScore>(_ => OnUpdateScoreRequest());
-        EventBus.Instance.Subscribe<OnTimeChange>(_ => OnUpdateTimerRequest());
         EventBus.Instance.Subscribe<OnStartGame>(_ => OnStartGameRequest());
         EventBus.Instance.Subscribe<OnGameClear>(_ => OnGameClear());
         EventBus.Instance.Subscribe<OnGameOver>(_ => OnGameOverRequest());
@@ -58,14 +54,6 @@ public class UIPresenter : IUIPresenter
     {
         EventBus.Instance.Publish(new OnRestartGame());
         _uiView.ClearPopUp();
-    }
-    public void OnUpdateScoreRequest()
-    {
-        _uiView.UpdateScore();
-    }
-    public void OnUpdateTimerRequest()
-    {
-        _uiView.UpdateTimer();
     }
 
     public void OnReturnLobbyRequest()

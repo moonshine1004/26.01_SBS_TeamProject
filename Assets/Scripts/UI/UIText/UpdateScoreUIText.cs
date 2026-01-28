@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class UpdateScoreUIText : MonoBehaviour
@@ -5,7 +6,7 @@ public class UpdateScoreUIText : MonoBehaviour
     [SerializeField] private TextType _textType;
     private void Update()
     {
-        var text = GetComponent<UnityEngine.UI.Text>();
+        var text = GetComponent<TextMeshProUGUI>();
         switch (_textType)
         {
             case TextType.CurrentScore:

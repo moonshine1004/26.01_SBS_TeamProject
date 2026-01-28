@@ -77,7 +77,7 @@ public class GameStageManager : MonoBehaviour
             lastPos -= new Vector3(0, middle.GetComponent<Renderer>().bounds.size.y,0);
         }
         var bottom = Instantiate(_stagePrefabs[_stagePrefabs.Count-1]);
-        bottom.transform.position = lastPos + new Vector3(0.25f, -1.92f, 0);
+        bottom.transform.position = lastPos + new Vector3(0.25f, -7.09f, 0);
     }
     private void ClearStage()
     {
@@ -162,7 +162,7 @@ public class GameStageManager : MonoBehaviour
     private void RestartGame()
     {
         ScoreManager.Instance.ResetTileScore();
-        _uiPresenter.OnUpdateScoreRequest();
+        // EventBus.Instance.Publish(new OnRestartGame());
         StartTimer(_stageData.time);
         Time.timeScale = 1f;
         TileDrawer.Instance.OnStart();

@@ -5,16 +5,21 @@ using System.Threading;
 using UnityEngine.InputSystem;
 using Game.Events;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 
 public interface IUIView
 {
     void InitUIView(IUIPresenter uiPresenter);
     void TogglePopUp(SceneState sceneState);
     void ClearPopUp();
-    void UpdateScore();
-    void UpdateTimer();
     void OnStartGame();
+    void PopUpCanvas(CanvasType canvasType);
+}
 
+public enum CanvasType
+{
+    PausePopUp,
+    SettingsPopUp
 }
 
 public class UIView : MonoBehaviour, IUIView
@@ -26,7 +31,6 @@ public class UIView : MonoBehaviour, IUIView
     }
     
     #region References
-    private IPlayerPresenter _playerPresenter;
     #endregion
     #region Feilds
     [SerializeField] private Canvas[] _allCanvas = new Canvas[7];
@@ -34,11 +38,10 @@ public class UIView : MonoBehaviour, IUIView
     [SerializeField] private Canvas _gameOverPopUp;
     [SerializeField] private Canvas _gameClearPopUp;
     [SerializeField] private Canvas _lobby;
-     [SerializeField] private Canvas _characterSelect;
-     [SerializeField] private Canvas _mapSelect;
-    [SerializeField] private Text _tileScore;
-
-    [SerializeField] private Text _timer;
+    [SerializeField] private Canvas _characterSelect;
+    [SerializeField] private Canvas _mapSelect;
+    [SerializeField] private Canvas _pausePopUp;
+    [SerializeField] private Canvas _settingPopUp;
     [SerializeField] private GameObject _tutorials;
     #endregion
 
@@ -77,6 +80,37 @@ public class UIView : MonoBehaviour, IUIView
     {
         ClearAllCanvas();
         _mapSelect.gameObject.SetActive(true);
+    }
+    public void PopUpCanvas(CanvasType canvasType)
+    {
+        switch(canvasType)
+        {
+            case CanvasType.PausePopUp:
+                {
+                    if (_pausePopUp.gameObject.activeSelf)
+                    {
+                        _pausePopUp.gameObject.SetActive(false);
+                        break;
+                    }
+                    else
+                    _pausePopUp.gameObject.SetActive(true);
+                    break;
+                }
+            case CanvasType.SettingsPopUp:
+                {
+                    if (_settingPopUp.gameObject.activeSelf)
+                    {
+                        _settingPopUp.gameObject.SetActive(false);
+                        break;
+                    }
+                    else
+                    _settingPopUp.gameObject.SetActive(true);
+                    break;
+                }
+            default:
+                break;
+        }
+        
     }
 
     public async void WaitSecond(float seconds)
@@ -131,25 +165,16 @@ public class UIView : MonoBehaviour, IUIView
     {
         _uiPresenter.OnRestartRequest();
     }
-    public void UpdateScore()
-    {
-        _tileScore.text = $"{ScoreManager.Instance.TileScore}";
-    }
     public void ClearPopUp()
     {
         ClearAllCanvas();
         _inGameUI.gameObject.SetActive(true);
-    }
-    public void UpdateTimer()
-    {
-        _timer.text = $"{GameStageManager.Instance.RemainingTime}";
     }
 
     public void OnStartGame()
     {
         ClearAllCanvas();
         _tutorials.SetActive(true);
-        UpdateScore();
         _inGameUI.gameObject.SetActive(true);
         WaitSecond(ConstVariable.startAnimationTime);
     }
