@@ -16,9 +16,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+
     [SerializeField] private AudioMixer _audioMixer;
-    [SerializeField] private string bgmParam = "BgmVolume";
-    [SerializeField] private string sfxParam = "SfxVolume";
+    private string BgmVolume = "BGM_Volume";
+    private string SfxVolume = "SFX_Volume";
 
 
     private void Awake()
@@ -29,14 +30,29 @@ public class AudioManager : MonoBehaviour
     public void SetBgmVolume(float value)
     {
         value = Mathf.Clamp01(value);
-        _audioMixer.SetFloat(bgmParam, ToDecibel(value));
+        GamePrefsRepository.BgmVolume = value;
+        _audioMixer.SetFloat(BgmVolume, ToDecibel(GamePrefsRepository.BgmVolume));
     }
 
     public void SetSfxVolume(float value)
     {
         value = Mathf.Clamp01(value);
-        _audioMixer.SetFloat(sfxParam, ToDecibel(value));
+        GamePrefsRepository.SfxVolume = value;
+        _audioMixer.SetFloat(SfxVolume, ToDecibel(GamePrefsRepository.SfxVolume));
     }
+
+    public void OnBgmSliderChanged(float value)
+    {
+        GamePrefsRepository.BgmVolume = value;
+        SetBgmVolume(value);
+    }
+
+    public void OnSfxSliderChanged(float value)
+    {
+        GamePrefsRepository.SfxVolume = value;
+        SetSfxVolume(value);
+    }
+
     private float ToDecibel(float value)
     {
         if (value <= 0.0001f) return -80f;

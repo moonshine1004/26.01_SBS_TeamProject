@@ -26,6 +26,9 @@ public class PlayerView : MonoBehaviour, IPlayerView
     private SpriteRenderer _spriteRenderer;
     [SerializeField] private CinemachineFollow _cinemachineFollow;
     [SerializeField] private CinemachineCamera _cinemachineCamera;
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _deathSound;
+    [SerializeField] private AudioClip _clearSound;
     #endregion
     #region Fields
     private float _xMove = ConstVariable.xDistance;
@@ -199,6 +202,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     public async Task SetDeath()
     {
+        _audioSource.PlayOneShot(_deathSound);
         await DeathAnimation();
         _animator.SetBool("isDeath", true);
     }
@@ -217,6 +221,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
     }
     public Task SetClearGame()
     {
+        _audioSource.PlayOneShot(_clearSound);
         _canMove = false;
         _cinemachineFollow.FollowOffset = new Vector3(0, 4.05f, -10);
         _cinemachineCamera.Follow = transform;

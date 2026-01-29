@@ -43,6 +43,8 @@ public class UIView : MonoBehaviour, IUIView
     [SerializeField] private Canvas _pausePopUp;
     [SerializeField] private Canvas _settingPopUp;
     [SerializeField] private GameObject _tutorials;
+    [SerializeField] private GameObject _testMoveButton;
+    [SerializeField] private GameObject _testFlipButton;
     #endregion
 
     #region Unity Lifecycle Methods
@@ -122,13 +124,22 @@ public class UIView : MonoBehaviour, IUIView
     #region Methods for Test
     public void MoveTest(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
+        {
             _uiPresenter.OnMoveRequest();
+            _testMoveButton.GetComponent<ButtonView>().OnButtonPressed();
+            _testMoveButton.GetComponent<UIButtonSound>().PlaySound();
+        }
+            
     }
     public void FlipTest(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
+        {
             _uiPresenter.OnFlipRequest();
+            _testFlipButton.GetComponent<ButtonView>().OnButtonPressed();
+            _testFlipButton.GetComponent<UIButtonSound>().PlaySound();
+        }
     }
     #endregion
 

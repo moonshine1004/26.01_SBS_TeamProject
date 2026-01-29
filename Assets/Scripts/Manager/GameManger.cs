@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     #region Test Methods
     [ContextMenu("Clear PlayerPrefs")]
-    private void ClearPlayerPrefs()
+    public void ClearPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
     }
