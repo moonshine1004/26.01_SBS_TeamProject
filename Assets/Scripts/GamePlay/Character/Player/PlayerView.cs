@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using Unity.Cinemachine;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,22 +13,7 @@ public enum PlayerState
     Fall,
 }
 
-public readonly struct PlayerMovePlan
-{
-    public PlayerState State { get; }
-    public Vector3 StartPosition { get; }
-    public Vector3 TargetPosition { get; }
-    public bool IsLeft { get; }
-    public float MoveDuration { get; }
-    public PlayerMovePlan(PlayerState State, Vector3 StartPosition = default, Vector3 TargetPosition = default, float MoveDuration = default)
-    {
-        this.State = State;
-        this.StartPosition = StartPosition;
-        this.TargetPosition = TargetPosition;
-        this.IsLeft = TargetPosition.x < StartPosition.x;
-        this.MoveDuration = MoveDuration;
-    }
-}
+
 public readonly struct CameraPlan
 {
     
@@ -60,11 +46,11 @@ public class PlayerView : MonoBehaviour, IPlayerView
     [SerializeField] private AudioClip _deathSound;
     [SerializeField] private AudioClip _clearSound;
     #endregion
+
     #region Fields
-    private float _xMove = ConstVariable.xDistance;
-    private float _yMove = ConstVariable.yDistance;
     private bool _canMove = false;
     private bool _isMoving = false;
+    private Vector3 _currentPosition;
     private TaskCompletionSource<bool> _moveTcs;
     private Vector3 _lobbyPosition;
     private Vector3 _sceneStartPosition;
@@ -89,10 +75,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _lobbyPosition = transform.position;
         _cinemachineFollow.FollowOffset = new Vector3(0, 1.7f, -10);
     }
-    private void Update()
-    {
-        Move(); 
-    }
+
     #endregion
 
     #region Methods
@@ -102,25 +85,24 @@ public class PlayerView : MonoBehaviour, IPlayerView
         {
             case PlayerState.StartGame:
                 _animator.SetBool("isRunning", true);
-                yield return GameStartSequence(playerMovePlan.StartPosition, playerMovePlan.TargetPosition, playerMovePlan.MoveDuration);
+                GameStartSequence(playerMovePlan.StartPosition, playerMovePlan.TargetPosition, playerMovePlan.MoveDuration);
                 break;
             case PlayerState.Walk:
-                _animator.SetBool("isWalking", true);
+                _animator.SetTrigger("isWalking");
+                StartCoroutine(RenderMove(playerMovePlan.IsLeft, playerMovePlan.TargetPosition));
                 break;
-            
         }
     }
-    private void Move()
+    private IEnumerator RenderMove(bool isLeft, Vector3 targetPosition)
     {
-        if(_isMoving == false) return;
-        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 40f * Time.deltaTime);
-        if (Vector3.SqrMagnitude(transform.position - _targetPosition) < 0.0001f)
+        if(_isMoving == true) yield return null;
+        while (Vector3.SqrMagnitude(_currentPosition - targetPosition) > 0.0001f)
         {
-            transform.position = _targetPosition;
-            _moveTcs.TrySetResult(true);
-            _moveTcs = null;
-            _isMoving = false;
+            transform.position = Vector3.MoveTowards(_currentPosition, targetPosition, 40f * Time.deltaTime);
+            yield return null;
         }
+        transform.position = _targetPosition;
+
     }
     private IEnumerator GameStartSequence(Vector3 startPosition, Vector3 targetPosition, float duration)
     {
@@ -215,7 +197,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         if (_isMoving) return _moveTcs.Task ?? Task.CompletedTask;
         if(_isLeft)
         {
-            _targetPosition = transform.position + new Vector3(-_xMove, -_yMove, 0);
+    
             _isMoving = true;
             _animator.SetTrigger("isMoving");
             _moveTcs = new TaskCompletionSource<bool>();
@@ -223,7 +205,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
         } 
         else if(!_isLeft)
         {
-            _targetPosition = transform.position + new Vector3(_xMove, -_yMove, 0);
+            //_targetPosition = transform.position + new Vector3(_xMove, -_yMove, 0);
             _isMoving = true;
             _animator.SetTrigger("isMoving");
             _moveTcs = new TaskCompletionSource<bool>();
@@ -269,11 +251,11 @@ public class PlayerView : MonoBehaviour, IPlayerView
         _cinemachineCamera.Follow = null;
         if(isLeft)
         {
-            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(-_xMove,0, 0)));
+            //StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(-_xMove,0, 0)));
         }
         else if(!isLeft)
         {
-            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(_xMove,0, 0)));
+            //StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(_xMove,0, 0)));
         }
     }
     public Task SetClearGame()

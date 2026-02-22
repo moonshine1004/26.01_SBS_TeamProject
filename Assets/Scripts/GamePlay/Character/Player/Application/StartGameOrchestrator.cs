@@ -18,7 +18,7 @@ public class StartGameOrchestrator
     {
         var playerMovePlan = _playerMoveService.Execute();
         // var playerCameraPlan = 
-        _playerView.ApplyPlayerPlan(playerMovePlan);
+        //_playerView.ApplyPlayerPlan(playerMovePlan);
     }
 
     

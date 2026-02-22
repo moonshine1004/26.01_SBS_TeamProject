@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 public interface IPlayerPresenter
 {
-    void Onhit(int damage);
     void OnMoveRequest();
     void OnFlipRequest();
     void OnStartGame();
@@ -58,7 +57,6 @@ public class PlayerPresenter : IPlayerPresenter
     private GameService _gameService;
     private Vector2 _startPosition = new Vector2(2,0);
     private Vector2 _position = new Vector2(2, 0);
-    private bool _canMove = false;
     
     
     #endregion
@@ -67,7 +65,7 @@ public class PlayerPresenter : IPlayerPresenter
     
     public async void CheckTile(Vector2 position)
     {
-        _canMove = false;
+ //= false;
         if (!TileDrawer.Instance.CheckTile(position))
         {
             await _playerView.SetDeath();
@@ -81,35 +79,35 @@ public class PlayerPresenter : IPlayerPresenter
             GameStageManager.Instance.OnSceneStateChange(SceneState.GameClear);
             return;
         }
-        _canMove = true;
+        //_canMove = true;
     }
 
     public async void WaitSecond(float seconds)
     {
         await Task.Delay((int)seconds * 1000); 
-        _canMove = true;
+        //_canMove = true;
     }
     
     #region IPlayerPresenter Interface Implementation
-    public void OnStartFix()
+    public void OnStartRequestFix()
     {
         _playerView.ApplyPlayerMovePlan(_gameService.PlayerFeature.StartGameUseCase.Execute());
     }
-    public void OnMoveFix()
+    public void OnMoveRequestFix()
     {
-        _gameService.PlayerFeature.MoveUseCase.Execute();
+        _playerView.ApplyPlayerMovePlan(_gameService.PlayerFeature.MoveUseCase.Execute());
     }
     
     public async void OnMoveRequest()
     {
-        if(!_canMove) return;
-        if(_isLeft)
+        if(!_playerModel.PlayerMoveState.CanMove) return;
+        if(_playerModel.PlayerMoveState.IsLeft)
             _position += new Vector2(-1, -1);
         else
             _position += new Vector2(1, -1);
         if(ScoreManager.Instance.TileScore >= - 6 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor) // Before Clear Condition
         {
-            _playerView.SetCameraFollowOff(_isLeft);
+            _playerView.SetCameraFollowOff(_playerModel.PlayerMoveState.IsLeft);
         }
         await _playerView.SetPosition();
         ScoreManager.Instance.AddTileScore();
@@ -123,8 +121,8 @@ public class PlayerPresenter : IPlayerPresenter
 
     public void OnFlipRequest()
     {
-        if(!_canMove) return;
-        _isLeft = !_isLeft;
+        if(!_playerModel.PlayerMoveState.IsLeft) return;
+        _playerModel.PlayerMoveState.FlipIsLeft();
         _playerView.SetDiraction();
         OnMoveRequest();
     }
@@ -136,17 +134,19 @@ public class PlayerPresenter : IPlayerPresenter
     public void OnRestartGame()
     {
         _position = _startPosition;
-        _isLeft = true;
-        _canMove = true;
+        _playerModel.PlayerMoveState.SetState(false, true, false);
+        //_canMove = true;
         _playerView.SetRestartGame();
     }
     public void OnReturnLobby()
     {
-        _canMove = false;
+        //_canMove = false;
         _playerView.SetReturnLobby();
         _position = _startPosition;
-        _isLeft = true;
+        _playerModel.PlayerMoveState.SetState(false, true, false);
     }
     
     #endregion
 }
+
+

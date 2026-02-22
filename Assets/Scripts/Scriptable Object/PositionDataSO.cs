@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Core/PositionDateS0")]
-public class PositionDateS0 : ScriptableObject
+[CreateAssetMenu(menuName = "ScriptableObjects/CheckPoint")]
+public class CheckPointDateS0 : ScriptableObject
 {
     public string positionName;
     public Vector3 position;

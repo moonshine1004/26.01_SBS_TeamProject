@@ -6,6 +6,10 @@ public sealed class GameService
     {
         PlayerFeature = playerFeature;
     }
+    public GameService()
+    {
+        
+    }
 
     public PlayerFeature PlayerFeature { get; }
     public StartGameOrchestrator GameStartUseCase { get; private set; }

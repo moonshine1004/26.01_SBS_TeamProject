@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Core/PositionDataCatalogSO")]
-public class PositionDataCatalogSO : ScriptableObject
+[CreateAssetMenu(menuName = "ScriptableObjects/CheckPoint")]
+public class CheckPointDataCatalogSO : ScriptableObject, ICheckPinterProvider
 {
-    public List<PositionDateS0> positionDataS;
-    public PositionDateS0 GetPositionDataByName(string positionName)
+    public List<CheckPointDateS0> positionDatas;
+    public Dictionary<string, CheckPointDateS0> positionDataDictionary;
+
+    public CheckPointDateS0 GetCheckPointData(string positionName)
     {
-        foreach (var posData in positionDataS)
+        foreach (var posData in positionDatas)
         {
             if (posData.positionName == positionName)
             {
@@ -17,3 +19,8 @@ public class PositionDataCatalogSO : ScriptableObject
         return null;
     }
 }   
+
+public interface ICheckPinterProvider
+{
+    CheckPointDateS0 GetCheckPointData(string positionName);
+}
