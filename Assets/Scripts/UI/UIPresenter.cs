@@ -32,11 +32,11 @@ public class UIPresenter : IUIPresenter
     #region IUIPresenter Interface Implementation
     public void OnFlipRequest()
     {
-        EventBus.Instance.Publish(new OnFlipPressed());
+        EventBus.Instance.Publish(new OnFlipButtonPressed());
     }
     public void OnMoveRequest()
     {
-        EventBus.Instance.Publish(new OnMovePressed());
+        EventBus.Instance.Publish(new OnMoveButtonPressed());
     }
     public void OnStartGameRequest()
     {
