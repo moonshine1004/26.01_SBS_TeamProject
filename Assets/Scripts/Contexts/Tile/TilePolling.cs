@@ -3,17 +3,6 @@ using UnityEngine;
 
 public class TilePooling : MonoBehaviour
 {
-    private static TilePooling _instance;
-    public static TilePooling Instance
-    {
-        get{
-            if(_instance == null)
-            {
-                _instance = FindFirstObjectByType<TilePooling>();
-            }
-            return _instance;
-        }
-    }
     
     [SerializeField] private GameObject _tilePrefab;
     private List<GameObject> _pooledTile = new List<GameObject>();

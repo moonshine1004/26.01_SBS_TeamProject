@@ -5,21 +5,10 @@ using UnityEngine.Tilemaps;
 
 public class TileDrawer : MonoBehaviour
 {
-    private static TileDrawer _tileDrawer;
-    public static TileDrawer Instance
-    {
-        get
-        {
-            if (_tileDrawer == null)
-            {
-                _tileDrawer = FindFirstObjectByType<TileDrawer>();
-            }
-            return _tileDrawer;
-        }
-    }
     
     #region Fields
     [SerializeField] private List<Vector2> _tileGrid = new List<Vector2>();
+    public List<Vector2> TileGrid => _tileGrid;
     public Vector2Int min = new(0, -80); // 가로 칸 수, 세로 칸 수 -> 내려가는 게임이므로 y는 음수
     public Vector2Int max = new( 10, 0); // 가로 칸 수, 세로 칸 수 -> 가로는 10칸
     public Vector3 startPosition;

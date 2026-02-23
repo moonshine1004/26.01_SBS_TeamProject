@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 public interface IPlayerPresenter
 {
-    void Onhit(int damage);
     void OnMoveRequest();
     void OnFlipRequest();
     void OnStartGame();
@@ -45,16 +44,11 @@ public class PlayerPresenter : IPlayerPresenter
     #region Fields
     private Vector2 _startPosition = new Vector2(2,0);
     private Vector2 _position = new Vector2(2, 0);
+    public Vector2 Position => _position;
     private bool _canMove = false;
     private bool _isLeft = true;
     #endregion
-
-    private TilePresenter _tilePresenter;
     
-    public void Onhit(int damage)
-    {
-        _playerModel.HP -= damage;
-    }
     public async void CheckTile(Vector2 position)
     {
         _canMove = false;
