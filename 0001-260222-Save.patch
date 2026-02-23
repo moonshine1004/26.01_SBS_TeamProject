@@ -1,0 +1,541 @@
+From c0e5eba8188c29319c0bfd51744ac44b086ed65e Mon Sep 17 00:00:00 2001
+From: moonshine1004 <moonshine1004@naver.com>
+Date: Sun, 22 Feb 2026 21:13:01 +0900
+Subject: [PATCH] 260222 Save
+
+---
+ Assets/Scripts/Core/GameBootStrapper.cs       |  8 ++-
+ Assets/Scripts/Core/GameService.cs            |  4 ++
+ .../Player/Application/PlayerMoveUseCase.cs   | 38 +++++++++++--
+ .../Application/StartGameOrchestrator.cs      |  2 +-
+ .../GamePlay/Character/Player/PlayerModel.cs  | 55 +++++++++---------
+ .../Character/Player/PlayerPresenter.cs       | 34 +++++------
+ .../GamePlay/Character/Player/PlayerView.cs   | 56 +++++++------------
+ .../PositionDataCatalogSO.cs                  | 19 +++++--
+ .../Scriptable Object/PositionDataSO.cs       |  4 +-
+ ProjectSettings/ShaderGraphSettings 37.asset  | 19 +++++++
+ 10 files changed, 137 insertions(+), 102 deletions(-)
+ create mode 100644 ProjectSettings/ShaderGraphSettings 37.asset
+
+diff --git a/Assets/Scripts/Core/GameBootStrapper.cs b/Assets/Scripts/Core/GameBootStrapper.cs
+index 3f04134..f71e6d2 100644
+--- a/Assets/Scripts/Core/GameBootStrapper.cs
++++ b/Assets/Scripts/Core/GameBootStrapper.cs
+@@ -2,19 +2,21 @@ using UnityEngine;
+ 
+ public sealed class GameBootStrapper : MonoBehaviour
+ {
++    
++    
+     public static GameService Services { get; private set; }
+     
+-    [SerializeField] private PositionDataCatalogSO _positionDataCatalog; 
++    [SerializeField] private CheckPointDataCatalogSO _positionDataCatalog; 
+ 
+     private void Awake()
+     {
+         DontDestroyOnLoad(this.gameObject);
+ 
+         // Infra 생성
+-        PositionDateS0 _lobbyPositionData = _positionDataCatalog.GetPositionDataByName("PlayerStartPosition");
++        
+ 
+         // UseCase 생성
+-        IPlayerMoveSequence startGameUseCase = new StartGameUseCase();
++        IPlayerMoveSequence startGameUseCase = new StartGameUseCase(_positionDataCatalog);
+         IPlayerMoveUseCase moveUseCase = new PlayerMoveUseCase();
+ 
+         // Feature 생성
+diff --git a/Assets/Scripts/Core/GameService.cs b/Assets/Scripts/Core/GameService.cs
+index c8c2102..169c8c1 100644
+--- a/Assets/Scripts/Core/GameService.cs
++++ b/Assets/Scripts/Core/GameService.cs
+@@ -6,6 +6,10 @@ public sealed class GameService
+     {
+         PlayerFeature = playerFeature;
+     }
++    public GameService()
++    {
++        
++    }
+ 
+     public PlayerFeature PlayerFeature { get; }
+     public StartGameOrchestrator GameStartUseCase { get; private set; }
+diff --git a/Assets/Scripts/GamePlay/Character/Player/Application/PlayerMoveUseCase.cs b/Assets/Scripts/GamePlay/Character/Player/Application/PlayerMoveUseCase.cs
+index 3a738f1..78dcd23 100644
+--- a/Assets/Scripts/GamePlay/Character/Player/Application/PlayerMoveUseCase.cs
++++ b/Assets/Scripts/GamePlay/Character/Player/Application/PlayerMoveUseCase.cs
+@@ -1,36 +1,62 @@
+ using System.Collections;
+ using Unity.Cinemachine;
++using UnityEditor.Build;
+ using UnityEngine;
+ using UnityEngine.Scripting.APIUpdating;
+ 
+ 
+ public interface IPlayerMoveSequence
+ {
+-    PlayerMovePlan Execute(Vector3 targetPosition);
++    PlayerMovePlan Execute();
+ }
+ public interface IPlayerMoveUseCase
+ {
+     PlayerMovePlan Execute();
+ }
+-
++public readonly struct PlayerMovePlan
++{
++    public PlayerState State { get; }
++    public Vector3 StartPosition { get; }
++    public Vector3 TargetPosition { get; } 
++    public bool IsLeft { get; }
++    public float MoveDuration { get; }
++    public PlayerMovePlan(PlayerState State, Vector3 StartPosition = default, bool IsLeft = default, Vector3 TargetPosition = default, float MoveDuration = default)
++    {
++        this.State = State;
++        this.StartPosition = StartPosition;
++        this.TargetPosition = TargetPosition;
++        this.IsLeft = IsLeft;
++        this.MoveDuration = MoveDuration;
++    }
++}
+ public class StartGameUseCase : IPlayerMoveSequence
+ {
+-    PositionDateS0 targetPositionData;
++    public StartGameUseCase(ICheckPinterProvider checkPinterProvider)
++    {
++        _targetPosition = checkPinterProvider;
++    }
++    
++    private ICheckPinterProvider _targetPosition;
+ 
+-    public PlayerMovePlan Execute(Vector3 targetPosition)
++    public PlayerMovePlan Execute()
+     {
+-        PlayerMovePlan playerPlan = new PlayerMovePlan(PlayerState.StartGame, TargetPosition: targetPositionData.position, MoveDuration: 2f);
++        PlayerMovePlan playerPlan = new PlayerMovePlan(PlayerState.StartGame, TargetPosition: _targetPosition.GetCheckPointData("test").position, MoveDuration: 2f);
+         return playerPlan;
+     }
+ }
+ 
+ public class PlayerMoveUseCase : IPlayerMoveUseCase
+ {    
++    private PlayerModel _playerModel;
++    
+     public PlayerMovePlan Execute()
+     {
++        var targetPos = _playerModel.PlayerMoveState.IsLeft ? new Vector3(-ConstVariable.xDistance, ConstVariable.yDistance, 0) : new Vector3(ConstVariable.xDistance, ConstVariable.yDistance, 0);
++        
+         PlayerMovePlan playerPlan = new PlayerMovePlan(
+             PlayerState.Walk, 
+-            TargetPosition: new Vector3(ConstVariable.xDistance, ConstVariable.yDistance, 0), 
++            IsLeft: _playerModel.PlayerMoveState.IsLeft,
++            TargetPosition: targetPos, 
+             MoveDuration: 2f);
+         return playerPlan;
+     }
+diff --git a/Assets/Scripts/GamePlay/Character/Player/Application/StartGameOrchestrator.cs b/Assets/Scripts/GamePlay/Character/Player/Application/StartGameOrchestrator.cs
+index 0cc9cf6..de3b0ba 100644
+--- a/Assets/Scripts/GamePlay/Character/Player/Application/StartGameOrchestrator.cs
++++ b/Assets/Scripts/GamePlay/Character/Player/Application/StartGameOrchestrator.cs
+@@ -18,7 +18,7 @@ public class StartGameOrchestrator
+     {
+         var playerMovePlan = _playerMoveService.Execute();
+         // var playerCameraPlan = 
+-        _playerView.ApplyPlayerPlan(playerMovePlan);
++        //_playerView.ApplyPlayerPlan(playerMovePlan);
+     }
+ 
+     
+diff --git a/Assets/Scripts/GamePlay/Character/Player/PlayerModel.cs b/Assets/Scripts/GamePlay/Character/Player/PlayerModel.cs
+index 851aeb7..a9b072a 100644
+--- a/Assets/Scripts/GamePlay/Character/Player/PlayerModel.cs
++++ b/Assets/Scripts/GamePlay/Character/Player/PlayerModel.cs
+@@ -1,43 +1,38 @@
+ using UnityEngine;
+ 
+-public enum PlayerType
++public class PlayerModel
+ {
+-    Player01,
+-    Player02
+-}
++    public PlayerModel()
++    {
++        
++    }
++    public PlayerMovementModel PlayerMoveState { get; private set; } = new();
+ 
++}
+ 
+-public class PlayerModel
++public class PlayerMovementModel
+ {
+-    private string _name;
+-    private bool _isAlive = true;
+-    private readonly int _maxHP;
+-    private int _hp;
++    public bool CanMove { get; private set; } = false;
++    public bool IsLeft { get; private set; } = true;
++    public bool IsMoving { get; private set; } = false;
+ 
+-    public bool IsAlive{ get => _isAlive; set => _isAlive = value; }
+-    public int HP
++    public void SetState(bool canMove, bool isLeft, bool isMoving)
+     {
+-        get => _hp;
+-        set 
+-        {
+-            _hp = value;
+-            if (_hp <= 0)
+-            {
+-                IsAlive = false;
+-            }
+-        }
++        CanMove = canMove;
++        IsLeft = isLeft;
++        IsMoving = isMoving;
+     }
+ 
+-    public int MaxHP => _maxHP;
+-
+-    public PlayerModel()
++    public void SetCanMove(bool canMove)
+     {
+-        
++        CanMove = canMove;
++    }
++    public void FlipIsLeft()
++    {
++        IsLeft =! IsLeft;
++    }
++    public void SetIsMoving(bool isMoving)
++    {
++        IsMoving = isMoving;
+     }
+-
+ }
+-
+-public sealed class Player01Model : PlayerModel
+-{
+-    
+-}
+\ No newline at end of file
+diff --git a/Assets/Scripts/GamePlay/Character/Player/PlayerPresenter.cs b/Assets/Scripts/GamePlay/Character/Player/PlayerPresenter.cs
+index 1f2a8ef..5effb2b 100644
+--- a/Assets/Scripts/GamePlay/Character/Player/PlayerPresenter.cs
++++ b/Assets/Scripts/GamePlay/Character/Player/PlayerPresenter.cs
+@@ -8,7 +8,6 @@ using System.Threading.Tasks;
+ 
+ public interface IPlayerPresenter
+ {
+-    void Onhit(int damage);
+     void OnMoveRequest();
+     void OnFlipRequest();
+     void OnStartGame();
+@@ -58,7 +57,6 @@ public class PlayerPresenter : IPlayerPresenter
+     private GameService _gameService;
+     private Vector2 _startPosition = new Vector2(2,0);
+     private Vector2 _position = new Vector2(2, 0);
+-    private bool _canMove = false;
+     
+     
+     #endregion
+@@ -67,7 +65,7 @@ public class PlayerPresenter : IPlayerPresenter
+     
+     public async void CheckTile(Vector2 position)
+     {
+-        _canMove = false;
++ //= false;
+         if (!TileDrawer.Instance.CheckTile(position))
+         {
+             await _playerView.SetDeath();
+@@ -81,35 +79,35 @@ public class PlayerPresenter : IPlayerPresenter
+             GameStageManager.Instance.OnSceneStateChange(SceneState.GameClear);
+             return;
+         }
+-        _canMove = true;
++        //_canMove = true;
+     }
+ 
+     public async void WaitSecond(float seconds)
+     {
+         await Task.Delay((int)seconds * 1000); 
+-        _canMove = true;
++        //_canMove = true;
+     }
+     
+     #region IPlayerPresenter Interface Implementation
+-    public void OnStartFix()
++    public void OnStartRequestFix()
+     {
+         _playerView.ApplyPlayerMovePlan(_gameService.PlayerFeature.StartGameUseCase.Execute());
+     }
+-    public void OnMoveFix()
++    public void OnMoveRequestFix()
+     {
+-        _gameService.PlayerFeature.MoveUseCase.Execute();
++        _playerView.ApplyPlayerMovePlan(_gameService.PlayerFeature.MoveUseCase.Execute());
+     }
+     
+     public async void OnMoveRequest()
+     {
+-        if(!_canMove) return;
+-        if(_isLeft)
++        if(!_playerModel.PlayerMoveState.CanMove) return;
++        if(_playerModel.PlayerMoveState.IsLeft)
+             _position += new Vector2(-1, -1);
+         else
+             _position += new Vector2(1, -1);
+         if(ScoreManager.Instance.TileScore >= - 6 + GameManager.Instance.CurrentStageData.endLine * ConstVariable.tilesOnFloor) // Before Clear Condition
+         {
+-            _playerView.SetCameraFollowOff(_isLeft);
++            _playerView.SetCameraFollowOff(_playerModel.PlayerMoveState.IsLeft);
+         }
+         await _playerView.SetPosition();
+         ScoreManager.Instance.AddTileScore();
+@@ -123,8 +121,8 @@ public class PlayerPresenter : IPlayerPresenter
+ 
+     public void OnFlipRequest()
+     {
+-        if(!_canMove) return;
+-        _isLeft = !_isLeft;
++        if(!_playerModel.PlayerMoveState.IsLeft) return;
++        _playerModel.PlayerMoveState.FlipIsLeft();
+         _playerView.SetDiraction();
+         OnMoveRequest();
+     }
+@@ -136,17 +134,19 @@ public class PlayerPresenter : IPlayerPresenter
+     public void OnRestartGame()
+     {
+         _position = _startPosition;
+-        _isLeft = true;
+-        _canMove = true;
++        _playerModel.PlayerMoveState.SetState(false, true, false);
++        //_canMove = true;
+         _playerView.SetRestartGame();
+     }
+     public void OnReturnLobby()
+     {
+-        _canMove = false;
++        //_canMove = false;
+         _playerView.SetReturnLobby();
+         _position = _startPosition;
+-        _isLeft = true;
++        _playerModel.PlayerMoveState.SetState(false, true, false);
+     }
+     
+     #endregion
+ }
++
++
+diff --git a/Assets/Scripts/GamePlay/Character/Player/PlayerView.cs b/Assets/Scripts/GamePlay/Character/Player/PlayerView.cs
+index 023ac36..e323d7b 100644
+--- a/Assets/Scripts/GamePlay/Character/Player/PlayerView.cs
++++ b/Assets/Scripts/GamePlay/Character/Player/PlayerView.cs
+@@ -1,6 +1,7 @@
+ using System.Collections;
+ using System.Threading.Tasks;
+ using Unity.Cinemachine;
++using UnityEditor;
+ using UnityEngine;
+ using UnityEngine.InputSystem;
+ 
+@@ -12,22 +13,7 @@ public enum PlayerState
+     Fall,
+ }
+ 
+-public readonly struct PlayerMovePlan
+-{
+-    public PlayerState State { get; }
+-    public Vector3 StartPosition { get; }
+-    public Vector3 TargetPosition { get; }
+-    public bool IsLeft { get; }
+-    public float MoveDuration { get; }
+-    public PlayerMovePlan(PlayerState State, Vector3 StartPosition = default, Vector3 TargetPosition = default, float MoveDuration = default)
+-    {
+-        this.State = State;
+-        this.StartPosition = StartPosition;
+-        this.TargetPosition = TargetPosition;
+-        this.IsLeft = TargetPosition.x < StartPosition.x;
+-        this.MoveDuration = MoveDuration;
+-    }
+-}
++
+ public readonly struct CameraPlan
+ {
+     
+@@ -60,11 +46,11 @@ public class PlayerView : MonoBehaviour, IPlayerView
+     [SerializeField] private AudioClip _deathSound;
+     [SerializeField] private AudioClip _clearSound;
+     #endregion
++
+     #region Fields
+-    private float _xMove = ConstVariable.xDistance;
+-    private float _yMove = ConstVariable.yDistance;
+     private bool _canMove = false;
+     private bool _isMoving = false;
++    private Vector3 _currentPosition;
+     private TaskCompletionSource<bool> _moveTcs;
+     private Vector3 _lobbyPosition;
+     private Vector3 _sceneStartPosition;
+@@ -89,10 +75,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
+         _lobbyPosition = transform.position;
+         _cinemachineFollow.FollowOffset = new Vector3(0, 1.7f, -10);
+     }
+-    private void Update()
+-    {
+-        Move(); 
+-    }
++
+     #endregion
+ 
+     #region Methods
+@@ -102,25 +85,24 @@ public class PlayerView : MonoBehaviour, IPlayerView
+         {
+             case PlayerState.StartGame:
+                 _animator.SetBool("isRunning", true);
+-                yield return GameStartSequence(playerMovePlan.StartPosition, playerMovePlan.TargetPosition, playerMovePlan.MoveDuration);
++                GameStartSequence(playerMovePlan.StartPosition, playerMovePlan.TargetPosition, playerMovePlan.MoveDuration);
+                 break;
+             case PlayerState.Walk:
+-                _animator.SetBool("isWalking", true);
++                _animator.SetTrigger("isWalking");
++                StartCoroutine(RenderMove(playerMovePlan.IsLeft, playerMovePlan.TargetPosition));
+                 break;
+-            
+         }
+     }
+-    private void Move()
++    private IEnumerator RenderMove(bool isLeft, Vector3 targetPosition)
+     {
+-        if(_isMoving == false) return;
+-        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, 40f * Time.deltaTime);
+-        if (Vector3.SqrMagnitude(transform.position - _targetPosition) < 0.0001f)
++        if(_isMoving == true) yield return null;
++        while (Vector3.SqrMagnitude(_currentPosition - targetPosition) > 0.0001f)
+         {
+-            transform.position = _targetPosition;
+-            _moveTcs.TrySetResult(true);
+-            _moveTcs = null;
+-            _isMoving = false;
++            transform.position = Vector3.MoveTowards(_currentPosition, targetPosition, 40f * Time.deltaTime);
++            yield return null;
+         }
++        transform.position = _targetPosition;
++
+     }
+     private IEnumerator GameStartSequence(Vector3 startPosition, Vector3 targetPosition, float duration)
+     {
+@@ -215,7 +197,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
+         if (_isMoving) return _moveTcs.Task ?? Task.CompletedTask;
+         if(_isLeft)
+         {
+-            _targetPosition = transform.position + new Vector3(-_xMove, -_yMove, 0);
++    
+             _isMoving = true;
+             _animator.SetTrigger("isMoving");
+             _moveTcs = new TaskCompletionSource<bool>();
+@@ -223,7 +205,7 @@ public class PlayerView : MonoBehaviour, IPlayerView
+         } 
+         else if(!_isLeft)
+         {
+-            _targetPosition = transform.position + new Vector3(_xMove, -_yMove, 0);
++            //_targetPosition = transform.position + new Vector3(_xMove, -_yMove, 0);
+             _isMoving = true;
+             _animator.SetTrigger("isMoving");
+             _moveTcs = new TaskCompletionSource<bool>();
+@@ -269,11 +251,11 @@ public class PlayerView : MonoBehaviour, IPlayerView
+         _cinemachineCamera.Follow = null;
+         if(isLeft)
+         {
+-            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(-_xMove,0, 0)));
++            //StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(-_xMove,0, 0)));
+         }
+         else if(!isLeft)
+         {
+-            StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(_xMove,0, 0)));
++            //StartCoroutine(MoveCameraToTarget(_cinemachineCamera.transform.position + new Vector3(_xMove,0, 0)));
+         }
+     }
+     public Task SetClearGame()
+diff --git a/Assets/Scripts/Scriptable Object/PositionDataCatalogSO.cs b/Assets/Scripts/Scriptable Object/PositionDataCatalogSO.cs
+index 494b1e4..97181d4 100644
+--- a/Assets/Scripts/Scriptable Object/PositionDataCatalogSO.cs	
++++ b/Assets/Scripts/Scriptable Object/PositionDataCatalogSO.cs	
+@@ -1,13 +1,15 @@
+ using System.Collections.Generic;
+ using UnityEngine;
+ 
+-[CreateAssetMenu(menuName = "ScriptableObjects/Core/PositionDataCatalogSO")]
+-public class PositionDataCatalogSO : ScriptableObject
++[CreateAssetMenu(menuName = "ScriptableObjects/CheckPoint")]
++public class CheckPointDataCatalogSO : ScriptableObject, ICheckPinterProvider
+ {
+-    public List<PositionDateS0> positionDataS;
+-    public PositionDateS0 GetPositionDataByName(string positionName)
++    public List<CheckPointDateS0> positionDatas;
++    public Dictionary<string, CheckPointDateS0> positionDataDictionary;
++
++    public CheckPointDateS0 GetCheckPointData(string positionName)
+     {
+-        foreach (var posData in positionDataS)
++        foreach (var posData in positionDatas)
+         {
+             if (posData.positionName == positionName)
+             {
+@@ -16,4 +18,9 @@ public class PositionDataCatalogSO : ScriptableObject
+         }
+         return null;
+     }
+-}   
+\ No newline at end of file
++}   
++
++public interface ICheckPinterProvider
++{
++    CheckPointDateS0 GetCheckPointData(string positionName);
++}
+\ No newline at end of file
+diff --git a/Assets/Scripts/Scriptable Object/PositionDataSO.cs b/Assets/Scripts/Scriptable Object/PositionDataSO.cs
+index bd543b0..2a5e1c9 100644
+--- a/Assets/Scripts/Scriptable Object/PositionDataSO.cs	
++++ b/Assets/Scripts/Scriptable Object/PositionDataSO.cs	
+@@ -1,7 +1,7 @@
+ using UnityEngine;
+ 
+-[CreateAssetMenu(menuName = "ScriptableObjects/Core/PositionDateS0")]
+-public class PositionDateS0 : ScriptableObject
++[CreateAssetMenu(menuName = "ScriptableObjects/CheckPoint")]
++public class CheckPointDateS0 : ScriptableObject
+ {
+     public string positionName;
+     public Vector3 position;
+diff --git a/ProjectSettings/ShaderGraphSettings 37.asset b/ProjectSettings/ShaderGraphSettings 37.asset
+new file mode 100644
+index 0000000..0421697
+--- /dev/null
++++ b/ProjectSettings/ShaderGraphSettings 37.asset	
+@@ -0,0 +1,19 @@
++%YAML 1.1
++%TAG !u! tag:unity3d.com,2011:
++--- !u!114 &1
++MonoBehaviour:
++  m_ObjectHideFlags: 53
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 0}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: de02f9e1d18f588468e474319d09a723, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: 
++  shaderVariantLimit: 128
++  overrideShaderVariantLimit: 0
++  customInterpolatorErrorThreshold: 32
++  customInterpolatorWarningThreshold: 16
++  customHeatmapValues: {fileID: 0}
+-- 
+2.50.1
+

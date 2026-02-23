@@ -20,12 +20,15 @@ public sealed class GameService
 
 public sealed class PlayerFeature
 {
-    public PlayerFeature(IPlayerMoveSequence startGameUseCase, IPlayerMoveUseCase moveUseCase)
+    public PlayerFeature(PlayerFactory playerFactory, IPlayerMoveSequence startGameUseCase, IPlayerMoveUseCase moveUseCase, SwitchPlayerUseCase switchPlayerUseCase)
     {
+        PlayerFactory = playerFactory;
         StartGameUseCase = startGameUseCase;
         MoveUseCase = moveUseCase;
+        SwitchPlayerUseCase = switchPlayerUseCase;
     }
-    
+    public SwitchPlayerUseCase SwitchPlayerUseCase { get; private set; }
+    public PlayerFactory PlayerFactory { get; }
     public IPlayerMoveSequence StartGameUseCase { get; }
     public IPlayerMoveUseCase MoveUseCase { get; }
     public IPlayerMoveUseCase FlipUseCase { get; }

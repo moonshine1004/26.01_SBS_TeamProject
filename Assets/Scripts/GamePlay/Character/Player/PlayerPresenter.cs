@@ -19,14 +19,6 @@ public interface IPlayerPresenter
 
 
 
-
-
-
-
-
-
-
-
 public class PlayerPresenter : IPlayerPresenter
 {
     #region Constructor
@@ -87,6 +79,7 @@ public class PlayerPresenter : IPlayerPresenter
         await Task.Delay((int)seconds * 1000); 
         //_canMove = true;
     }
+    
     
     #region IPlayerPresenter Interface Implementation
     public void OnStartRequestFix()

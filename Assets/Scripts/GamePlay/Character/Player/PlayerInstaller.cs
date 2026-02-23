@@ -1,28 +1,38 @@
 using UnityEngine;
 
-public class PlayerInstaller : MonoBehaviour
+public interface IPlayerRegistry
+{
+    
+}
+
+
+public class PlayerInstaller : MonoBehaviour, IPlayerRegistry
 {
     [SerializeField] private IPlayerView _playerView;
-    [SerializeField] private PlayerDataSO _defaultPlayerData;
     private PlayerModel _playerModel;
+    [SerializeField] private PlayerDataSO _defaultPlayerData;
     private IPlayerPresenter _playerPresenter;
+
+    public IPlayerView PlayerView => _playerView;
+    public PlayerModel PlayerModel => _playerModel; 
+    public IPlayerPresenter PlayerPresenter => _playerPresenter;
+
+
 
     #region Unity Lifecycle
     public void Awake()
     {
         _playerView = GetComponent<IPlayerView>();
-        _playerPresenter = new PlayerPresenter(_playerModel, _playerView); 
     }
     #endregion
 
-    public void SwitchPlayer(PlayerDataSO playerModelSO)
+    public void SwitchPlayer(PlayerFactory playerFactory, PlayerDataSO playerModelSO)
     {
-        _playerModel = InitPlayerModel(playerModelSO);
+        _playerModel = playerFactory.CreatePlayer(_playerView).model;
+        _playerPresenter = playerFactory.CreatePlayer(_playerView).presenter;
+        
         _playerView.InstallPlayerView(_playerPresenter, playerModelSO.animatorController);
     }
-    private PlayerModel InitPlayerModel(PlayerDataSO playerStat)
-    {
-        return new PlayerModel();
-    }
+
 
 }

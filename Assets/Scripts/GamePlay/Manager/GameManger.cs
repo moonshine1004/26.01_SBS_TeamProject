@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
     {
         _currentPlayerData = _playerCatalogSO.GetPlayerDataByID(playerID);
         GamePrefsRepository.CurrentPlayPlayer = playerID;
-        _playerInstaller.SwitchPlayer(_currentPlayerData);
+        //_playerInstaller.SwitchPlayer(_currentPlayerData);
     }
     public void Switch(ButtonType buttonType, int id)
     {
