@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UseCase.Player;
+
 namespace Domain.Player
 {
     public enum Side{ left, right }
@@ -25,26 +27,6 @@ namespace Domain.Player
                 return false;
             }
         }
-    }
-
-    public class MoveUseCase
-    {
-        private readonly WalkDomain _domain;
-        public Action<string> OnMove; // 프레젠테이션에 이벤트 전달
-
-        public MoveUseCase(WalkDomain domain)
-        {
-            _domain = domain;
-        }
-
-        public void Move(Side input)
-        {
-            bool canMove = _domain.ApplyMove(input, out var moveApplyEvent);
-
-            OnMove?.Invoke(moveApplyEvent); // 프레젠테이션에 이벤트 전달
-        }
-
-        public Side Facing => _domain.facing;
     }
 
     public class BootStrap : MonoBehaviour
@@ -82,7 +64,7 @@ namespace Domain.Player
         public void Install(MoveUseCase moveUseCase)
         {
             _moveUseCase = moveUseCase;
-            _moveUseCase.OnMove += OnDomainEvent;
+            _moveUseCase.OnMoveEvent += OnDomainEvent;
         }
         private MoveUseCase _moveUseCase;
         private const float _xDistance = 2.44f;

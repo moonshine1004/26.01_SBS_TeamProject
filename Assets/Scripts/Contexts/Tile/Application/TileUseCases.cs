@@ -10,9 +10,9 @@ public class CheckTileUseCase
     private readonly Vector2 _position;
     private readonly TileDrawer _tileDrawer;
     
-    public CheckTileUseCase(Vector2 position, TileDrawer tileDrawer)
+    public CheckTileUseCase(PlayerPresenter player, TileDrawer tileDrawer)
     {
-        _position = position;
+        _position = player.Position;
         _tileDrawer = tileDrawer;
     }
 
